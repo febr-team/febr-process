@@ -1,3 +1,16 @@
+# Transform coordinates in degrees, minutes, and decimal seconds to decimal degrees ####
+dms2dd <- 
+  function (x, type = "lat") {
+    x[, 1:3] <- lapply(1:3, function (i) ifelse(is.na(x[, i]), NA_real_, x[, i]) )
+    res <- x[, 1] + x[, 2] / 60 + x[, 3] / 3600
+    if (type == "lat") {
+      res <- ifelse(x[, 4] == "Sul", res * -1, res)
+    } else {
+      res <- ifelse(x[, 4] == "Oeste", res * -1, res)
+    }
+    return (res)
+  }
+
 # Get symbol from soil classification
 sibcsSymbol <- 
   function (x) {
