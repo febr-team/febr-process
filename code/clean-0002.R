@@ -40,7 +40,7 @@ id <- grep("aluvionar", pf$Litologia)
 pf$Litologia[id] <- "Sedimento aluvial"
 
 # Save temporary file
-write.csv(pf, "/home/alessandro/projects/brazil/Fe-BR-data/data/raw/fe0002/tmp.csv")
+write.csv(pf, "data/raw/fe0002/tmp.csv")
 rm(pf)
 
 # Horizon ####
@@ -50,4 +50,7 @@ hz <- db[id_row, c(
 str(hz)
 
 # Save temporary file
-write.csv(hz, "/home/alessandro/projects/brazil/Fe-BR-data/data/raw/fe0002/tmp.csv")
+write.csv(hz, "data/raw/fe0002/tmp.csv")
+
+# Remove temporary file
+system("rm data/raw/fe0002/tmp.csv")
