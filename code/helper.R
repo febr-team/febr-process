@@ -1,3 +1,9 @@
+# Fazer busca na Internet usando https://duckduckgo.com ####
+duckduckgo <-
+  function (x) {
+    x <- paste("https://duckduckgo.com/?q=", x,"&t=canonical&ia=web", sep = "")
+    browseURL(x)
+  }
 # Buscar limites municipais no geoservidor do IBGE #### 
 getCity <- 
   function (cityname = "Espumoso") {
