@@ -1,3 +1,11 @@
+# Fazer busca na Internet usando https://www.google.com.br/maps ####
+googlemaps <-
+  function (x) {
+    x <- paste("https://www.google.com.br/maps/place/@", x[1], ",", x[2], 
+               ",10z/data=!3m1!4b1!4m5!3m4!1s0x0:0x0!8m2!3d", x[1], "!4d", x[2], "?hl=en", 
+               sep = "")
+    browseURL(x)
+  }
 # Fazer busca na Internet usando https://duckduckgo.com ####
 duckduckgo <-
   function (x) {
