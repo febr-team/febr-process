@@ -1,12 +1,44 @@
+# Buscar limites municipais no geoservidor do IBGE #### 
+getCity <- 
+  function (cityname = "Espumoso") {
+    tmp <- tempfile(fileext = ".shp")
+    dsn <- paste(
+      "WFS:http://www.geoservicos.ibge.gov.br:80/geoserver/wfs?service=WFS&version=1.1.0&",
+      "request=GetFeature&typeName=CGEO:LIM_Municipios2013", sep = "")
+    gdalUtils::ogr2ogr(
+      src_datasource_name = dsn, dst_datasource_name = tmp, 
+      where = paste("nommunic='", cityname, "'", sep = ""))
+    rgdal::readOGR(dsn = tmp, stringsAsFactors = FALSE)
+  }
 # Transform coordinates in degrees, minutes, and decimal seconds to decimal degrees ####
 dms2dd <- 
   function (x, type = "lat") {
+    
     x[, 1:3] <- lapply(1:3, function (i) ifelse(is.na(x[, i]), NA_real_, x[, i]) )
-    res <- x[, 1] + x[, 2] / 60 + x[, 3] / 3600
-    if (type == "lat") {
-      res <- ifelse(x[, 4] == "Sul", res * -1, res)
-    } else {
-      res <- ifelse(x[, 4] == "Oeste", res * -1, res)
+    m <- x[, 2] / 60
+    s <- x[, 3] / 3600
+    res <- x[, 1] + ifelse(is.na(m), 0, m) + ifelse(is.na(s), 0, s)
+    
+    for (i in 1:length(res)) {
+      if (!is.na(x[i, 4])) {
+        if (type == "lat") {
+          if (x[i, 4] == "Sul") {
+            res[i] <- res[i] * -1
+          } else if (x[i, 4] == "Norte") {
+            res[i] <- res[i]
+          } else {
+            res[i] <- NA_real_
+          }
+        } else {
+          if (x[i, 4] == "Oeste") {
+            res[i] <- res[i] * -1
+          } else if (x[i, 4] == "Leste") {
+            res[i] <- res[i]
+          } else {
+            res[i] <- NA_real_
+          }
+        }
+      }
     }
     return (res)
   }
