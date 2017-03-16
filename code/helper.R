@@ -68,7 +68,7 @@ dms2dd <-
 
 # Get symbol from soil classification
 sibcsSymbol <- 
-  function (x) {
+  function (x, encoding = "UTF-8") {
     
     y <- unlist(strsplit(x = x, split = " ", fixed = TRUE))
     
@@ -87,7 +87,8 @@ sibcsSymbol <-
       "S", "planossolo",
       "P", "plintossolo", 
       "V", "vertissolo")
-    first_level <- t(matrix(first_level, nrow = 2))  
+    first_level <- t(matrix(first_level, nrow = 2))
+    Encoding(first_level) <- encoding
     z <- first_level[grep(y[1], first_level[, 2], ignore.case = TRUE), 1][1]
     
     # Second level
@@ -98,6 +99,7 @@ sibcsSymbol <-
       "V", "vermelho",
       "VA", "vermelho-amarelo")
     second_level <- t(matrix(second_level, nrow = 2))
+    Encoding(second_level) <- encoding
     z <- paste(z, second_level[grep(y[2], second_level[, 2], ignore.case = TRUE), 1][1], sep = "")
     
     # Third level
@@ -120,6 +122,7 @@ sibcsSymbol <-
       "q", "psalmítico"
     )
     third_level <- t(matrix(third_level, nrow = 2))
+    Encoding(third_level) <- encoding
     z <- paste(z, third_level[grep(y[3], third_level[, 2], ignore.case = TRUE), 1][1], sep = "")
     
     return (z)
