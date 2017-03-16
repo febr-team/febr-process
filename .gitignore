@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 data/raw
+data/gis
+web
+draw
