@@ -24,6 +24,15 @@ getCity <-
       where = paste("nommunic='", cityname, "'", sep = ""))
     rgdal::readOGR(dsn = tmp, stringsAsFactors = FALSE)
   }
+swapAxisOrder <-
+  function (x) {
+    l <- length(x)
+    for (i in 1:l) {
+      x@polygons[[1]]@Polygons[[i]]@coords <- x@polygons[[1]]@Polygons[[i]]@coords[, 2:1]
+    }
+    x@bbox <- t(apply(x@polygons[[1]]@Polygons[[i]]@coords, 2, range))
+    x
+  }
 # Transform coordinates in degrees, minutes, and decimal seconds to decimal degrees ####
 dms2dd <- 
   function (x, type = "lat") {
