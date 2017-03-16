@@ -8,7 +8,8 @@ source("code/helper.R")
 
 # Carregar dados
 file <- "fe0003/embrapa.csv"
-db <- read.csv(paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE)
+db <- read.csv(
+  paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 
 # Identificar linhas e colunas contendo dados de ferro
 id_col <- colnames(db)[grep("Fe", colnames(db))]
