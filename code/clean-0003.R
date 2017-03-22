@@ -12,7 +12,7 @@ db <- read.csv(
   paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 
 # Identificar linhas e colunas contendo dados de ferro
-id_col <- colnames(db)[grep("Fe", colnames(db))]
+id_col <- colnames(db)[grep("Fe", colnames(db))] 
 id_col
 id_col <- id_col[-2]
 idx <- which(!is.na(db[, id_col]), arr.ind = TRUE)
@@ -47,14 +47,16 @@ db$UF[na_uf] <- "AM"
 
 # Salvar arquivo com descrição da contribuição para publicação no website.
 # Aqui eu ignoro quaisquer alterações na UF decorrentes da criação de novas UFs.
-ctb <- data.frame(Nome = "Sistema de Informação de Solos Brasileiros",
-                  Instituição = "Embrapa Informática Agropecuária / Embrapa Solos",
-                  UF = levels(as.factor(db$UF)),
-                  Contribuição = summary(as.factor(db$UF)),
-                  Tipo = "PEDOLÓGICO")
+ctb <- data.frame(
+  Nome = "Sistema de Informação de Solos Brasileiros",
+  Instituição = "Embrapa Informática Agropecuária / Embrapa Solos",
+  UF = levels(as.factor(db$UF)),
+  Contribuição = summary(as.factor(db$UF)),
+  Tipo = "PEDOLÓGICO",
+  url = "https://www.bdsolos.cnptia.embrapa.br/consulta_publica.html")
 rownames(ctb) <- NULL
 ctb
-write.csv(ctb, "./web/data/ctb0003.csv")  
+write.csv(ctb, "./web/data/ctb0003.csv", fileEncoding = "UTF-8")  
 rm(ctb)
 
 # PERFIS ######################################################################################################
