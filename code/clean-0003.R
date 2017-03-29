@@ -1477,38 +1477,71 @@ cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
 cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
 pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 
+# Identificar quantos registros ainda estão sem coordenadas.
+# Ainda são 2 mil registros sem coordenadas. Ainda é muita coisa!!!
+# Conferindo os dados de alguns dos perfis sem coordenadas nos relatórios de origem, percebeu-se que muitos
+# deles pode estar vindo de levantamentos antigos, onde não havia coordenadas. Isso significa que pode haver
+# perfis repetidos na base de dados. Assim pode não ser confiável usar a fonte do dado relatada na base de
+# dados. Uma alternativa pode ser usar a UF e informações da classificação taxonômica do perfil.
+idx <- which(is.na(pf$x_coord))
+length(idx)
+
+# Atribuir informação da UF para dados da Esalq
+tmp <- esalq[, c("latitude", "longitude")]
+sp::coordinates(tmp) <- c("latitude", "longitude")[2:1]
+sp::proj4string(tmp) <- sp::proj4string(states)
+tmp <- sp::over(tmp, states)
+esalq$UF <- tmp
+rm(tmp)
+uf <- unique(pf$UF)
 
 
-esalq[l, c("OrgProfID", "SourceNumber")]
-pf[idx[j], c("Número.PA", "Número")]
 
 
 
 
 
-unique(pf[idx[j], c("Referência.Bibliográfica", "Número", "Ano.de.Publicação", "Código.Trabalho")])
-l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
-
-pa <- stringr::str_split(pf[idx[j], "Número.PA"], " - ", simplify = T)
-pa <- paste("E", pa[, 1], sep = "")
-
-k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
-cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
-cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
-pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 
 
-unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
-l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
-k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
-cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
-cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
-pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+
+
+#
+i <- 1
+uf[i]
+tmp <- esalq[which(esalq$UF == uf[i]), ]
+
+j <- 1
+pa <- gsub("-", " ", pf$Classificação.Original[idx[i]])
+
+j <- which(pf[idx, "UF"] == uf[i])
+
+#
+
+pa <- gsub("-", " ", pf$Classificação.Original[idx[i]])
+n <- stringr::str_split_fixed(pa, " ", n = Inf)
+n <- length(n)
+d <- 0
+while (length(j) == 0) {
+  pa <- paste(stringr::str_split_fixed(pf$Classificação.Original[idx[i]], " ", n)[1:(n - d)], collapse = " ")
+  j <- agrep(pattern = pa, x = esalq$SiBCS1998[esalq$Source == "RADAM"], ignore.case = TRUE)
+  d <- d + 1  
+}
+
+
+pf[idx[i], c("Classificação.Original")]
+esalq$SiBCS1998[esalq$Source == "RADAM"][j]
+
+
+esalq[esalq$Source == "RADAM", 
+      c("OrgProfID", "Source", "SourceNumber", "SourceVolume", "SourceType", "PubYear")][j, ]
+pf[idx[i], c("Número.PA", "Número", "Título.do.Trabalho", "Ano.de.Publicação", "Código.Trabalho",
+             "Referência.Bibliográfica")]
+colnames(pf)
+
 
 
 sp::plot(states, asp = 1, axes = TRUE)
-points(esalq[l, c("longitude", "latitude")][k, ], cex = 0.5, col = 2)
-
+points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
 points(pf[, c("x_coord", "y_coord")], cex = 0.5, col = 2)
 
 
