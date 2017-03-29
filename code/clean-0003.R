@@ -209,7 +209,8 @@ pf$litology <- ifelse(pf$Litologia == "", NA_character_, pf$Litologia)
 # PERFIS: Coordenadas geográficas ----
 
 # Carregar shapefile com os limites do estados brasileiros
-states <- raster::shapefile("data/gis/states.shp")
+# states <- raster::shapefile("data/gis/states.shp")
+states <- raster::shapefile("web/data/states.shp")
 bb_br <- sp::bbox(states)
 bb_br[, 1] <- abs(floor(bb_br[, 1]))
 bb_br[, 2] <- abs(ceiling(bb_br[, 2]))
@@ -1121,8 +1122,11 @@ pf$radam <- FALSE
 pf$radam[grep("radambrasil", pf$Título.do.Trabalho, ignore.case = TRUE)] <- TRUE
 
 # Carregar dados compilados por pesquisadores da Esalq
+# A atibuição de coordenadas se dá com base, primeiro, na identificação dos trabalhos por ano conforme a base
+# de dados da Esalq.
 file <- "fe0003/esalq.csv"
-esalq <- read.csv(paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE)
+esalq <- read.csv(
+  paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 esalq <- esalq[order(esalq$PubYear), ]
 anos <- unique(esalq$PubYear)
 # Levantamento de Reconhecimento dos Solos do Estado de São Paulo (Contribuição à Carta de Solos do Brasil).
@@ -1421,18 +1425,67 @@ k <- match(pf[idx[j], "Número.PA"], pa);sum(!is.na(k))
 cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
 cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
 pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
-
-
-
-
-#
-i <- 15
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 29.
+i <- 14
 anos[i]
 j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
 unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
 unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
-n <- 18
+n <- 29
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(as.numeric(pf[idx[j], "Número.PA"]), esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Levantamento de Reconhecimento Dos Solos do Estado do Paraná
+i <- 16
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 27
 j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("Perfil nº", "", pf[idx[j], "Número.PA"])
+pa <- gsub("PC nº", "C", pa)
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# LEVANTAMENTO DE RECONHECIMENTO DOS SOLOS E AVALIAÇÃO DA APTIDÃO AGRÍCOLA DAS TERRAS DE UMA ÁREA DE 
+# COLONIZAÇÃO NO MUNICÍPIO DE CAREIRO, ESTADO DO AMAZONAS.
+n <- 31
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+k <- match(as.numeric(pf[idx[j], "Número.PA"]), esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Levantamento Exploratório-Reconhecimento de Solos do Estado do Maranhão
+i <- 17
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 35
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("Perfil ", "", pf[idx[j], "Número.PA"])
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+
+
+
+esalq[l, c("OrgProfID", "SourceNumber")]
+pf[idx[j], c("Número.PA", "Número")]
+
+
+
+
+
 unique(pf[idx[j], c("Referência.Bibliográfica", "Número", "Ano.de.Publicação", "Código.Trabalho")])
 l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
 
@@ -1459,8 +1512,6 @@ points(esalq[l, c("longitude", "latitude")][k, ], cex = 0.5, col = 2)
 points(pf[, c("x_coord", "y_coord")], cex = 0.5, col = 2)
 
 
-esalq[l, c("OrgProfID", "SourceNumber")]
-pf[idx[j], c("Número.PA", "Número")]
 
 
 
