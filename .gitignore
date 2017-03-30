@@ -3,6 +3,6 @@
 .RData
 .Ruserdata
 data/raw
-data/gis
+#data/gis
 web
 draw
