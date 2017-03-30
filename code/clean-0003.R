@@ -209,8 +209,7 @@ pf$litology <- ifelse(pf$Litologia == "", NA_character_, pf$Litologia)
 # PERFIS: Coordenadas geográficas ----
 
 # Carregar shapefile com os limites do estados brasileiros
-# states <- raster::shapefile("data/gis/states.shp")
-states <- raster::shapefile("web/data/states.shp")
+states <- raster::shapefile("data/gis/states.shp")
 bb_br <- sp::bbox(states)
 bb_br[, 1] <- abs(floor(bb_br[, 1]))
 bb_br[, 2] <- abs(ceiling(bb_br[, 2]))
@@ -1478,7 +1477,54 @@ cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
 pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 
 # Identificar quantos registros ainda estão sem coordenadas.
-# Ainda são 2 mil registros sem coordenadas. Ainda é muita coisa!!!
+# Ainda são 2 mil registros sem coordenadas. Ainda é muita coisa!!! Contudo, nem mesmo a base de dados da
+# Esalq possui tais informações. Além disso, observei que uma fração dos dados não foi descarregada do 
+# servidor da Embrapa, possivelmente por problema no nervidor ou na conexão. Por enquanto, os dados à mão
+# serão processados. Em seguida os que estão faltando. Uma estratégia possível é atribuir coordenadas 
+# aleatoriamente aos pontos dentro dos limites dos municípios onde foram obtidos. Assim, quanto maior for o
+# município, maior será o erro posicional.
+nrow(pf)
+length(idx)
+
+# Atribuir coordenada aleatória
+# xy <- list()
+# for (i in 1:10) {
+#   cat(unlist(pf[idx, c("Município", "UF")][i, ]), "...\n")
+#   ibge <- getCity(pf$Município[idx][i])
+#   ibge <- sp::spTransform(ibge, sp::proj4string(states))
+#   if (length(ibge) == 1) {
+#     ibge <- swapAxisOrder(ibge)
+#     xy[[i]] <- c(sp::spsample(ibge, 1, "random")@coords, pf[idx, c("Município", "UF")][i, ])
+#   } else {
+#     tmp <- as.data.frame(sp::coordinates(ibge))
+#     sp::coordinates(tmp) <- ~ V2 + V1
+#     sp::proj4string(tmp) <- sp::proj4string(states)
+#     ibge$uf <- sp::over(tmp, states)
+#     ibge <- ibge[which(ibge@data$uf == pf$UF[idx][i]), ]
+#     ibge <- swapAxisOrder(ibge)
+#     xy[[i]] <- c(sp::spsample(ibge, 1, "random")@coords, pf[idx, c("Município", "UF")][i, ])
+#   }
+# }
+# xy <- do.call(rbind, xy)
+# 
+# 
+# sp::plot(states, asp = 1, axes = TRUE)
+# points(xy[, 1:2], col = 1, pch = 20)
+# text(xy[, 1:2], labels = apply(xy[, 3:4], 1, function (x) paste(x[1], " (", x[2], ")", sep = "")), pos = 4,
+#      cex = 0.75)
+# 
+# 
+# 
+# sp::plot(states, asp = 1, axes = TRUE)
+# points(xy, col = 2)
+
+
+
+
+
+
+
+
 # Conferindo os dados de alguns dos perfis sem coordenadas nos relatórios de origem, percebeu-se que muitos
 # deles pode estar vindo de levantamentos antigos, onde não havia coordenadas. Isso significa que pode haver
 # perfis repetidos na base de dados. Assim pode não ser confiável usar a fonte do dado relatada na base de
@@ -1495,54 +1541,62 @@ esalq$UF <- tmp
 rm(tmp)
 uf <- unique(pf$UF)
 
-
-
-
-
-
-
-
-
-
-
-#
-i <- 1
+# PA
+i <- 9
 uf[i]
-tmp <- esalq[which(esalq$UF == uf[i]), ]
-
-j <- 1
-pa <- gsub("-", " ", pf$Classificação.Original[idx[i]])
-
-j <- which(pf[idx, "UF"] == uf[i])
-
-#
-
-pa <- gsub("-", " ", pf$Classificação.Original[idx[i]])
-n <- stringr::str_split_fixed(pa, " ", n = Inf)
-n <- length(n)
-d <- 0
-while (length(j) == 0) {
-  pa <- paste(stringr::str_split_fixed(pf$Classificação.Original[idx[i]], " ", n)[1:(n - d)], collapse = " ")
-  j <- agrep(pattern = pa, x = esalq$SiBCS1998[esalq$Source == "RADAM"], ignore.case = TRUE)
-  d <- d + 1  
-}
-
-
-pf[idx[i], c("Classificação.Original")]
-esalq$SiBCS1998[esalq$Source == "RADAM"][j]
+work <- unique(
+  pf[idx, ][pf$UF[idx] == uf[i], c("Título.do.Trabalho", "Tipo.de.Publicação", "Referência.Bibliográfica")])
+nrow(work)
+## 
+j <- 7
+work[j, ]
+pa <- pf[idx, ][pf$UF[idx] == uf[i] & pf$Título.do.Trabalho[idx] == work$Título.do.Trabalho[j], "Número.PA"]
+pa
+tmp <- esalq[
+  # esalq$SourceType == "BT" &
+  # esalq$Source == "SNLCS" &
+    # esalq$PubYear == 1980 &
+    # esalq$SourceNumber == 33 &
+    # esalq$SourceVolume == 8 &
+    esalq$UF == uf[i] &
+    !is.na(esalq$esalq_id)
+  , ]
+tmp[, c("PubYear", "Source", "SourceType", "SourceNumber", "SourceVolume", "UF")]
+pa;tmp[, "OrgProfID"]
 
 
-esalq[esalq$Source == "RADAM", 
-      c("OrgProfID", "Source", "SourceNumber", "SourceVolume", "SourceType", "PubYear")][j, ]
-pf[idx[i], c("Número.PA", "Número", "Título.do.Trabalho", "Ano.de.Publicação", "Código.Trabalho",
-             "Referência.Bibliográfica")]
-colnames(pf)
+pa <- gsub("Perfil ", "", pa)
+k <- match(pa, tmp[, "OrgProfID"]);sum(!is.na(k))
+na.exclude(cbind(pa, tmp[, "OrgProfID"][k]))
+
+write.csv(na.exclude(
+  cbind(
+    pf[idx, ][pf$UF[idx] == uf[i] & pf$Título.do.Trabalho[idx] == work$Título.do.Trabalho[j], c("Número.PA", "Classificação.Original")], tmp[k, c("OrgProfID", "SiBCS1998")])
+), "data/raw/fe0003/tmp.csv", fileEncoding = "UTF-8")
 
 
+dim(pf)
 
+
+##
 sp::plot(states, asp = 1, axes = TRUE)
 points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
-points(pf[, c("x_coord", "y_coord")], cex = 0.5, col = 2)
+points(pf[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
+#
+
+
+
+lapply(pa, function (x) {
+  n <- lapply(tmp[, "SiBCS1998"], stringr::str_split_fixed, " ", Inf)
+  n <- floor(mean(sapply(n, length)))
+  x <- paste(stringr::str_split_fixed(x, pattern = " ", n = n)[1:(n - 3)], collapse = " ")
+  agrep(x, tmp[, "SiBCS1998"], ignore.case = TRUE)
+})
+
+
+
+
+
 
 
 
