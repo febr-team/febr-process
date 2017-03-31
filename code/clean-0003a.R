@@ -5,6 +5,7 @@
 # Preparar ambiente de trabalho
 rm(list = ls())
 source("code/helper.R")
+source("code/helper-utf-8.R", encoding = "UTF-8")
 
 # Carregar dados
 file <- "fe0003/embrapa.csv"
