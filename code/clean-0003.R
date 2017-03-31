@@ -77,90 +77,6 @@ pf$observation_date <- gsub("--", NA_character_, pf$observation_date)
 
 # PERFIS: Uso da terra ----
 pf$land_use <- NA_character_
-keys <- list(
-  'AGRICULTURA' = c(
-    "arroz", "algodão", "aveia", "abacaxi", "agave", "arrado",
-    "banana", "batata", "bananeira", "batatinha",
-    "cupuaçu", "cana-de-açúcar", "citrus", "castanha", "coco", "café", "cultura", "cacau", "cafezal",
-    "coqueiro", "cultivo", "caju", "cultura de subsistência", "cultura anual", "centeio", "capoeira",
-    "desmatado", "derrubada",
-    "extrativismo", "experimentação", "erva-mate",
-    "fruticultura", "feijão", "fumo", "fava",
-    "girassol", "gradeada",
-    "horticultura",
-    "juta",
-    "lavoura", "laranja",
-    "mata explorada", "mata explorada",
-    "mata em exploração", "mata em exploração", 
-    "mamona", "mandioca", "milho", "macaxeira", "manga",
-    "olericultura",
-    "pomar", "pousio", "plantio", "piaçava", "pimenta", "preparo para plantio",
-    "roça",
-    "sapotí", "soja", "sisal",
-    "trigo", "tomate",
-    "vinhedo"
-  ),
-  'CRIAÇÃO ANIMAL' = c(
-    "azevém", "algaroba",
-    "bovino", "braquiária",
-    "capim", "campo nativo", "capim-colonião", "criação", "extensiva", "capim-gordura", 
-    "capim-elefante", "caprino", "capim-angola", "capim-guiné", "capim sempre-verde", "capim-jaraguá",
-    "campo natural",
-    "desmatado", "derrubada",
-    "equino", "extensiva",
-    "forragem",
-    "gado", "gramínea", "grama",
-    "leite",
-    "ovino",
-    "palma", "pastagem", "pecuária", "pasto", "pecuária extensiva", "pastagem natural", "pecuária na caatinga",
-    "pastagem artificial", "pastagem plantada", "pecuária no cerrado", "pecuária extensiva no cerrado"
-  ),
-  # 'OUTRO' = c(
-  # ),
-  'PROTEÇÃO DA NATUREZA' = c(
-    "cobertura vegetal natural", "cerrado", "cobertura natural", "caatinga",
-    "floresta", "floresta remanescente", "floresta nativa",
-    "mata natural", "mata secundária", "mata atlântica", "mata",
-    "nenhum", "não utilizado", "não aproveitado", "não constatado", "não utilizado agrícolamente",
-    "não observado",
-    "parque nacional",
-    "reserva florestal", "reserva", 
-    "savana", "sem utilização", "sem uso", "sem uso agrícola", "sem uso aparente",
-    "vegetação natural", "vegetação secundária", "vegetação nativa"
-  ),
-  'SILVICULTURA' = c(
-    "carvão",
-    "eucalipto",
-    "florestamento",
-    "horto florestal",
-    "lenha",
-    "madeira", 
-    "pinus", "pinheiro", "plantio de eucalipto",
-    "reflorestamento", "reflorestamento de pinus", "reflorestamento de eucalipto",
-    "seringueira"
-  ),
-  'URBANO' = c(
-    "área de empréstimo", "extração areia", "área urbana",
-    "exploração mineral",
-    "loteamento",    
-    "mineração",
-    "recreação",
-    "urbana"
-  )
-)
-guessClass <-
-  function (obj, keywords, max.distance = 0.1) {
-    out <- 
-      sapply(keywords, function (x) {
-        rowSums(
-          sapply(x, function (y) {
-            agrepl(pattern = y, x = obj, ignore.case = TRUE, max.distance = max.distance)
-          })
-        )
-      })
-    out <- apply(out, 1, function (x) round(x / sum(x), 4))
-    return (out)
-  }
 out <- guessClass(pf$Uso.Atual, keywords = keys, max.distance = 0.1)
 
 # Elevada probabilidade
@@ -341,7 +257,7 @@ pf[idx, lat_cols[4]] <-
     }
   })
 pf[idx, c(lat_cols, "UF")]
-# Dois registros permanecem ser dado sobre o hemisfério. O primeiro foi descrito em Boa Vista (RR), município 
+# Dois registros permanecem sem dado sobre o hemisfério. O primeiro foi descrito em Boa Vista (RR), município 
 # localizado no hemisfério norte. O segundo consiste em perfil descrito no município de Manacapuru (AM), 
 # localizado no hemisfério sul.
 idx <- which(is.na(pf[, lat_cols[4]]) & !is.na(pf[, lat_cols[1]]))
@@ -1477,15 +1393,36 @@ cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
 pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 
 # Identificar quantos registros ainda estão sem coordenadas.
-# Ainda são 2 mil registros sem coordenadas. Ainda é muita coisa!!! Contudo, nem mesmo a base de dados da
-# Esalq possui tais informações. Além disso, observei que uma fração dos dados não foi descarregada do 
-# servidor da Embrapa, possivelmente por problema no nervidor ou na conexão. Por enquanto, os dados à mão
-# serão processados. Em seguida os que estão faltando. Uma estratégia possível é atribuir coordenadas 
+idx <- which(is.na(pf$x_coord));length(idx)
+length(idx)/nrow(pf)
+# Ainda são 2 mil perfis com dados de ferro mas sem coordenadas. Ainda é muita coisa!!! Contudo, nem mesmo a
+# base de dados da Esalq possui tais informações. Numa rápida visita ao SISB, verifiquei que, para vários 
+# perfis, as coordenadas simplesmente não foram digitadas. Em alguns casos elas foram inseridas junto da 
+# descrição da localização geográfica. Da mesma forma, há inúmeros perfis para os quais os dados de ferro
+# não foram digitados. Talvez seja mais apropriado processar todos os dados de todos os trabalhos, primeiro 
+# numa escala de trabalho maior, como é o caso aqui, depois passando para o ajuste fino, trabalho por 
+# trabalho.
+
+
+
+
+
+
+
+
+
+
+
+#
+
+
+
+
+
+
+# Uma estratégia possível é atribuir coordenadas 
 # aleatoriamente aos pontos dentro dos limites dos municípios onde foram obtidos. Assim, quanto maior for o
 # município, maior será o erro posicional.
-nrow(pf)
-length(idx)
-
 # Atribuir coordenada aleatória
 # xy <- list()
 # for (i in 1:10) {
