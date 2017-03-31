@@ -5,7 +5,7 @@
 # Preparar ambiente de trabalho
 rm(list = ls())
 source("code/helper.R")
-source("code/helper-utf-8.R", encoding = "UTF-8")
+source("code/helper-utf8.R", encoding = "UTF-8")
 
 # Carregar dados
 file <- "fe0003/embrapa.csv"
@@ -461,26 +461,28 @@ i <- 7
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
 pf[idx_uf[i], "y_coord"] <- pf[idx_uf[i], "y_coord"] - 1
-# Lat -1 ao invés de -6 
+# UF e município
 i <- 8
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Número.PA")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
 # duckduckgo(pf[idx_uf[i], "Título.do.Trabalho"])
-pf[idx_uf[i], "y_coord"] <- pf[idx_uf[i], "y_coord"] + 5
-# Lat -1 ao invés de -6
+pf[idx_uf[i], c("Município", "UF")] <- c("Ananás", "TO")
+# Município e UF
 i <- 9
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Número.PA")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
-pf[idx_uf[i], "y_coord"] <- pf[idx_uf[i], "y_coord"] + 5
+pf[idx_uf[i], c("Município", "UF")] <- c("Riachinho", "TO")
 # UF é TO e Município é Taguatinga
 i <- 10
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+pf[idx_uf[i], c("Município", "UF")] <- c("Taguatinga", "TO")
 # UF é TO
 i <- 11
 pf[idx_uf[i], 
    c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho", "Número.PA")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+pf[idx_uf[i], c("Município", "UF")] <- c("Aurora do Tocantins", "TO")
 # Long -41 ao invés de -42
 i <- 12
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
@@ -530,6 +532,7 @@ pf[idx_uf[i], "x_coord"] <- pf[idx_uf[i], "x_coord"] - 2
 i <- 21
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Classificação.Original")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+pf[idx_uf[i], c("Município", "UF")] <- c("Arraias", "TO")
 # Long -43 ao invés de -39
 i <- 22
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Classificação.Original")]
@@ -593,7 +596,7 @@ pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descrit
 i <- 34
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
-pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-12.847833, -46.563424)
+pf[idx_uf[i], c("Município", "UF")] <- c("Arraias", "TO")
 # Lat e Long
 i <- 35
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
@@ -617,11 +620,13 @@ pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descrit
 i <- 39
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
-pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-13.407085, -47.688541)
+pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-6.501672, -48.621753)
+pf[idx_uf[i], c("Município", "UF")] <- c("Xambioá", "TO")
 # UF é TO
 i <- 40
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+pf[idx_uf[i], c("Município", "UF")] <- c("Palmeirópolis", "TO")
 # Lat e Long
 i <- 41
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
@@ -725,6 +730,7 @@ pf[idx_uf[i], "x_coord"] <- pf[idx_uf[i], "x_coord"] + 3
 i <- 61
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+pf[idx_uf[i], c("Município", "UF")] <- c("Alvorada do Tocantins", "TO")
 # Long -42.28333 ao invés de -42.48333
 i <- 62
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
@@ -745,6 +751,7 @@ i <- 65
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
 pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-12.849453, -46.566630)
+pf[idx_uf[i], c("Município", "UF")] <- c("Arraias", "TO")
 # Long -64 ao invés de -66
 i <- 66
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
@@ -754,15 +761,18 @@ pf[idx_uf[i], "x_coord"] <- pf[idx_uf[i], "x_coord"] + 2
 i <- 67
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+pf[idx_uf[i], c("Município", "UF")] <- c("Alvorada", "TO")
 # UF e Município
 i <- 68
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+pf[idx_uf[i], c("Município", "UF")] <- c("Cristalina", "GO")
 # Lat, Long, UF e Município
 i <- 69
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
-pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-12.911544, -46.838557)
+pf[idx_uf[i], c("y_coord")] <- pf[idx_uf[i], c("y_coord")] - 0.7
+pf[idx_uf[i], c("Município", "UF")] <- c("Arraias", "TO")
 # Lat e Long
 i <- 70
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
@@ -1405,273 +1415,273 @@ length(idx)/nrow(pf)
 # trabalho.
 
 
-
-
-
-
-
-
-
-
-
-#
-
-
-
-
-
-
-# Uma estratégia possível é atribuir coordenadas 
-# aleatoriamente aos pontos dentro dos limites dos municípios onde foram obtidos. Assim, quanto maior for o
-# município, maior será o erro posicional.
-# Atribuir coordenada aleatória
-# xy <- list()
-# for (i in 1:10) {
-#   cat(unlist(pf[idx, c("Município", "UF")][i, ]), "...\n")
-#   ibge <- getCity(pf$Município[idx][i])
-#   ibge <- sp::spTransform(ibge, sp::proj4string(states))
-#   if (length(ibge) == 1) {
-#     ibge <- swapAxisOrder(ibge)
-#     xy[[i]] <- c(sp::spsample(ibge, 1, "random")@coords, pf[idx, c("Município", "UF")][i, ])
-#   } else {
-#     tmp <- as.data.frame(sp::coordinates(ibge))
-#     sp::coordinates(tmp) <- ~ V2 + V1
-#     sp::proj4string(tmp) <- sp::proj4string(states)
-#     ibge$uf <- sp::over(tmp, states)
-#     ibge <- ibge[which(ibge@data$uf == pf$UF[idx][i]), ]
-#     ibge <- swapAxisOrder(ibge)
-#     xy[[i]] <- c(sp::spsample(ibge, 1, "random")@coords, pf[idx, c("Município", "UF")][i, ])
-#   }
-# }
-# xy <- do.call(rbind, xy)
 # 
 # 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# #
+# 
+# 
+# 
+# 
+# 
+# 
+# # Uma estratégia possível é atribuir coordenadas 
+# # aleatoriamente aos pontos dentro dos limites dos municípios onde foram obtidos. Assim, quanto maior for o
+# # município, maior será o erro posicional.
+# # Atribuir coordenada aleatória
+# # xy <- list()
+# # for (i in 1:10) {
+# #   cat(unlist(pf[idx, c("Município", "UF")][i, ]), "...\n")
+# #   ibge <- getCity(pf$Município[idx][i])
+# #   ibge <- sp::spTransform(ibge, sp::proj4string(states))
+# #   if (length(ibge) == 1) {
+# #     ibge <- swapAxisOrder(ibge)
+# #     xy[[i]] <- c(sp::spsample(ibge, 1, "random")@coords, pf[idx, c("Município", "UF")][i, ])
+# #   } else {
+# #     tmp <- as.data.frame(sp::coordinates(ibge))
+# #     sp::coordinates(tmp) <- ~ V2 + V1
+# #     sp::proj4string(tmp) <- sp::proj4string(states)
+# #     ibge$uf <- sp::over(tmp, states)
+# #     ibge <- ibge[which(ibge@data$uf == pf$UF[idx][i]), ]
+# #     ibge <- swapAxisOrder(ibge)
+# #     xy[[i]] <- c(sp::spsample(ibge, 1, "random")@coords, pf[idx, c("Município", "UF")][i, ])
+# #   }
+# # }
+# # xy <- do.call(rbind, xy)
+# # 
+# # 
+# # sp::plot(states, asp = 1, axes = TRUE)
+# # points(xy[, 1:2], col = 1, pch = 20)
+# # text(xy[, 1:2], labels = apply(xy[, 3:4], 1, function (x) paste(x[1], " (", x[2], ")", sep = "")), pos = 4,
+# #      cex = 0.75)
+# # 
+# # 
+# # 
+# # sp::plot(states, asp = 1, axes = TRUE)
+# # points(xy, col = 2)
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# # Conferindo os dados de alguns dos perfis sem coordenadas nos relatórios de origem, percebeu-se que muitos
+# # deles pode estar vindo de levantamentos antigos, onde não havia coordenadas. Isso significa que pode haver
+# # perfis repetidos na base de dados. Assim pode não ser confiável usar a fonte do dado relatada na base de
+# # dados. Uma alternativa pode ser usar a UF e informações da classificação taxonômica do perfil.
+# idx <- which(is.na(pf$x_coord))
+# length(idx)
+# 
+# # Atribuir informação da UF para dados da Esalq
+# tmp <- esalq[, c("latitude", "longitude")]
+# sp::coordinates(tmp) <- c("latitude", "longitude")[2:1]
+# sp::proj4string(tmp) <- sp::proj4string(states)
+# tmp <- sp::over(tmp, states)
+# esalq$UF <- tmp
+# rm(tmp)
+# uf <- unique(pf$UF)
+# 
+# # PA
+# i <- 9
+# uf[i]
+# work <- unique(
+#   pf[idx, ][pf$UF[idx] == uf[i], c("Título.do.Trabalho", "Tipo.de.Publicação", "Referência.Bibliográfica")])
+# nrow(work)
+# ## 
+# j <- 7
+# work[j, ]
+# pa <- pf[idx, ][pf$UF[idx] == uf[i] & pf$Título.do.Trabalho[idx] == work$Título.do.Trabalho[j], "Número.PA"]
+# pa
+# tmp <- esalq[
+#   # esalq$SourceType == "BT" &
+#   # esalq$Source == "SNLCS" &
+#     # esalq$PubYear == 1980 &
+#     # esalq$SourceNumber == 33 &
+#     # esalq$SourceVolume == 8 &
+#     esalq$UF == uf[i] &
+#     !is.na(esalq$esalq_id)
+#   , ]
+# tmp[, c("PubYear", "Source", "SourceType", "SourceNumber", "SourceVolume", "UF")]
+# pa;tmp[, "OrgProfID"]
+# 
+# 
+# pa <- gsub("Perfil ", "", pa)
+# k <- match(pa, tmp[, "OrgProfID"]);sum(!is.na(k))
+# na.exclude(cbind(pa, tmp[, "OrgProfID"][k]))
+# 
+# write.csv(na.exclude(
+#   cbind(
+#     pf[idx, ][pf$UF[idx] == uf[i] & pf$Título.do.Trabalho[idx] == work$Título.do.Trabalho[j], c("Número.PA", "Classificação.Original")], tmp[k, c("OrgProfID", "SiBCS1998")])
+# ), "data/raw/fe0003/tmp.csv", fileEncoding = "UTF-8")
+# 
+# 
+# dim(pf)
+# 
+# 
+# ##
 # sp::plot(states, asp = 1, axes = TRUE)
-# points(xy[, 1:2], col = 1, pch = 20)
-# text(xy[, 1:2], labels = apply(xy[, 3:4], 1, function (x) paste(x[1], " (", x[2], ")", sep = "")), pos = 4,
-#      cex = 0.75)
+# points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
+# points(pf[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
+# #
 # 
 # 
 # 
-# sp::plot(states, asp = 1, axes = TRUE)
-# points(xy, col = 2)
-
-
-
-
-
-
-
-
-# Conferindo os dados de alguns dos perfis sem coordenadas nos relatórios de origem, percebeu-se que muitos
-# deles pode estar vindo de levantamentos antigos, onde não havia coordenadas. Isso significa que pode haver
-# perfis repetidos na base de dados. Assim pode não ser confiável usar a fonte do dado relatada na base de
-# dados. Uma alternativa pode ser usar a UF e informações da classificação taxonômica do perfil.
-idx <- which(is.na(pf$x_coord))
-length(idx)
-
-# Atribuir informação da UF para dados da Esalq
-tmp <- esalq[, c("latitude", "longitude")]
-sp::coordinates(tmp) <- c("latitude", "longitude")[2:1]
-sp::proj4string(tmp) <- sp::proj4string(states)
-tmp <- sp::over(tmp, states)
-esalq$UF <- tmp
-rm(tmp)
-uf <- unique(pf$UF)
-
-# PA
-i <- 9
-uf[i]
-work <- unique(
-  pf[idx, ][pf$UF[idx] == uf[i], c("Título.do.Trabalho", "Tipo.de.Publicação", "Referência.Bibliográfica")])
-nrow(work)
-## 
-j <- 7
-work[j, ]
-pa <- pf[idx, ][pf$UF[idx] == uf[i] & pf$Título.do.Trabalho[idx] == work$Título.do.Trabalho[j], "Número.PA"]
-pa
-tmp <- esalq[
-  # esalq$SourceType == "BT" &
-  # esalq$Source == "SNLCS" &
-    # esalq$PubYear == 1980 &
-    # esalq$SourceNumber == 33 &
-    # esalq$SourceVolume == 8 &
-    esalq$UF == uf[i] &
-    !is.na(esalq$esalq_id)
-  , ]
-tmp[, c("PubYear", "Source", "SourceType", "SourceNumber", "SourceVolume", "UF")]
-pa;tmp[, "OrgProfID"]
-
-
-pa <- gsub("Perfil ", "", pa)
-k <- match(pa, tmp[, "OrgProfID"]);sum(!is.na(k))
-na.exclude(cbind(pa, tmp[, "OrgProfID"][k]))
-
-write.csv(na.exclude(
-  cbind(
-    pf[idx, ][pf$UF[idx] == uf[i] & pf$Título.do.Trabalho[idx] == work$Título.do.Trabalho[j], c("Número.PA", "Classificação.Original")], tmp[k, c("OrgProfID", "SiBCS1998")])
-), "data/raw/fe0003/tmp.csv", fileEncoding = "UTF-8")
-
-
-dim(pf)
-
-
-##
-sp::plot(states, asp = 1, axes = TRUE)
-points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
-points(pf[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
-#
-
-
-
-lapply(pa, function (x) {
-  n <- lapply(tmp[, "SiBCS1998"], stringr::str_split_fixed, " ", Inf)
-  n <- floor(mean(sapply(n, length)))
-  x <- paste(stringr::str_split_fixed(x, pattern = " ", n = n)[1:(n - 3)], collapse = " ")
-  agrep(x, tmp[, "SiBCS1998"], ignore.case = TRUE)
-})
-
-
-
-
-
-
-
-
-
-
-  
-  
- 
-
-
+# lapply(pa, function (x) {
+#   n <- lapply(tmp[, "SiBCS1998"], stringr::str_split_fixed, " ", Inf)
+#   n <- floor(mean(sapply(n, length)))
+#   x <- paste(stringr::str_split_fixed(x, pattern = " ", n = n)[1:(n - 3)], collapse = " ")
+#   agrep(x, tmp[, "SiBCS1998"], ignore.case = TRUE)
+# })
 # 
-
-
-pf[idx, c("Título.do.Trabalho", "Número")][which(pf[idx, "radam"] & pf[idx, "Ano.de.Publicação"] == 1973), ]
-
-i <- which(esalq$Source == "RADAM" & esalq$SourceVolume == 1)
-
-
-esalq[i, c("PubYear", "OrgProfID", "SiBCS1998")]
-
-# # Identify RADAM profiles without coordinates
 # 
-# na_lat <- which(is.na(pf$latitude[idx_radam]))
 # 
-# title <- stringr::str_trim(pf$Título.do.Trabalho[idx_radam])
-# title <- stringr::str_split_fixed(string = title, pattern = "Volume ", n = 2)[, 2]
-# title <- as.numeric(gsub(pattern = ".", replacement = "", x = title, fixed = TRUE))
 # 
-# idx_title <- which(title == 14)
 # 
-# pf$Ano.de.Publicação[idx_radam][idx_title]
 # 
-# i <- 1
-# idx_year <- which(pf$Ano.de.Publicação[na_lat][i] == esalq$PubYear, arr.ind = TRUE)
-# # idx_tax <- agrep(
-#   # stringr::word(pf$Classificação.Original[na_lat][i], end = 5), 
-#   # stringr::word(esalq$SiBCS1998[idx_year], end = 5),
-#   # ignore.case = TRUE, max.distance = 0.2
-# # )
 # 
-# if (pf$radam[na_lat][i]) {
+# 
+# 
+# 
 #   
-# } else {
-#   if (pf$Tipo.de.Publicação[na_lat][i] == "Boletim técnico") {
-#     idx <- which(esalq$SourceType[idx_year] == "BT")
-#     esalq[idx_year, ][idx, ]
-#   }
-# }
+#   
+#  
 # 
-# 
-# 
-# 
-# 
-# idx_tax
-# 
-# esalq[idx_year, ][idx_tax, ]
-# pf[na_lat, ][i, ]
-# 
-# 
-# 
-# 
-# 
-# # idx_source <- which(pf$source == "RADAM")
-# 
-# i <- 4
-# idx_year <- which(pf$Ano.de.Publicação[idx_source][i] == esalq$PubYear, arr.ind = TRUE)
-# idx_vol <- which(pf$Número[idx_source][i] == esalq$SourceVolume[idx_year], arr.ind = TRUE)
-# 
-# charmatch(pf$Número.PA[idx_source][i], esalq$OrgProfID[idx_vol])
-# 
-# idx_pf <- which(as.numeric() == , arr.ind = TRUE)
-# 
-# 
-# 
-# esalq[idx_pf, ][idx_year, ][idx_vol, ]
-# pf[i, ]
-# 
-# 
-# 
-# # Get data source volume
-# idx <- grep("volume", pf$Título.do.Trabalho, ignore.case = TRUE)
-# volume <- stringr::str_split_fixed(
-#   pf$Título.do.Trabalho[idx], stringr::fixed("volume ", ignore_case = TRUE), n = 2)[, 2]
-# volume <- stringr::word(volume, 1L)
-# volume <- gsub(".", "", volume, fixed = TRUE)
-# volume <- gsub(")", "", volume, fixed = TRUE)
-# volume <- ifelse(is.na(as.integer(volume)), as.integer(as.roman(volume)), as.integer(volume))
-# na_vol <- which(is.na(volume))
-# volume2 <- stringr::str_split_fixed(
-#   pf$Título.do.Trabalho[idx[na_vol]], stringr::fixed("- ", ignore_case = TRUE), n = 2)[, 2]
-# volume2 <- stringr::word(volume2, 1L)
-# volume2 <- as.integer(as.roman(volume2))
-# volume[na_vol] <- volume2
-# pf$volume <- NA_integer_
-# pf$volume[idx] <- volume
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# head(esalq)
-# summary(as.factor(esalq$Source))
 # 
 # # 
-# tmp <- db[, c("Northing", "Easting")]
-# sp::coordinates(tmp) <- ~ Northing + Easting
 # 
 # 
+# pf[idx, c("Título.do.Trabalho", "Número")][which(pf[idx, "radam"] & pf[idx, "Ano.de.Publicação"] == 1973), ]
+# 
+# i <- which(esalq$Source == "RADAM" & esalq$SourceVolume == 1)
 # 
 # 
+# esalq[i, c("PubYear", "OrgProfID", "SiBCS1998")]
 # 
-# 
-# 
-# 
-# 
-# # Soil classification
-# pf$classe <- paste(pf$Classe.de.Solos.Nível.3, " ", pf$X1ª.Ocorrência, sep = "")
-# Encoding(pf$classe) <- "UTF-8"
-# pf$sibcs <- sapply(pf$classe, sibcsSymbol)
-# 
-# 
-# 
-# 
-# # Save temporary file
-# write.csv(pf, "data/raw/fe0002/tmp.csv")
-# rm(pf)
-# 
-# # Horizon ####
-# hz <- db[id_row, c(
-#   "Código.PA", "Código.Horizonte", "Símbolo.Horizonte", "Profundidade.Superior", "Profundidade.Inferior", 
-#   id_col)]
-# str(hz)
-# 
-# # Save temporary file
-# write.csv(hz, "data/raw/fe0002/tmp.csv")
-# 
-# # Remove temporary file
-# system("rm data/raw/fe0002/tmp.csv")
+# # # Identify RADAM profiles without coordinates
+# # 
+# # na_lat <- which(is.na(pf$latitude[idx_radam]))
+# # 
+# # title <- stringr::str_trim(pf$Título.do.Trabalho[idx_radam])
+# # title <- stringr::str_split_fixed(string = title, pattern = "Volume ", n = 2)[, 2]
+# # title <- as.numeric(gsub(pattern = ".", replacement = "", x = title, fixed = TRUE))
+# # 
+# # idx_title <- which(title == 14)
+# # 
+# # pf$Ano.de.Publicação[idx_radam][idx_title]
+# # 
+# # i <- 1
+# # idx_year <- which(pf$Ano.de.Publicação[na_lat][i] == esalq$PubYear, arr.ind = TRUE)
+# # # idx_tax <- agrep(
+# #   # stringr::word(pf$Classificação.Original[na_lat][i], end = 5), 
+# #   # stringr::word(esalq$SiBCS1998[idx_year], end = 5),
+# #   # ignore.case = TRUE, max.distance = 0.2
+# # # )
+# # 
+# # if (pf$radam[na_lat][i]) {
+# #   
+# # } else {
+# #   if (pf$Tipo.de.Publicação[na_lat][i] == "Boletim técnico") {
+# #     idx <- which(esalq$SourceType[idx_year] == "BT")
+# #     esalq[idx_year, ][idx, ]
+# #   }
+# # }
+# # 
+# # 
+# # 
+# # 
+# # 
+# # idx_tax
+# # 
+# # esalq[idx_year, ][idx_tax, ]
+# # pf[na_lat, ][i, ]
+# # 
+# # 
+# # 
+# # 
+# # 
+# # # idx_source <- which(pf$source == "RADAM")
+# # 
+# # i <- 4
+# # idx_year <- which(pf$Ano.de.Publicação[idx_source][i] == esalq$PubYear, arr.ind = TRUE)
+# # idx_vol <- which(pf$Número[idx_source][i] == esalq$SourceVolume[idx_year], arr.ind = TRUE)
+# # 
+# # charmatch(pf$Número.PA[idx_source][i], esalq$OrgProfID[idx_vol])
+# # 
+# # idx_pf <- which(as.numeric() == , arr.ind = TRUE)
+# # 
+# # 
+# # 
+# # esalq[idx_pf, ][idx_year, ][idx_vol, ]
+# # pf[i, ]
+# # 
+# # 
+# # 
+# # # Get data source volume
+# # idx <- grep("volume", pf$Título.do.Trabalho, ignore.case = TRUE)
+# # volume <- stringr::str_split_fixed(
+# #   pf$Título.do.Trabalho[idx], stringr::fixed("volume ", ignore_case = TRUE), n = 2)[, 2]
+# # volume <- stringr::word(volume, 1L)
+# # volume <- gsub(".", "", volume, fixed = TRUE)
+# # volume <- gsub(")", "", volume, fixed = TRUE)
+# # volume <- ifelse(is.na(as.integer(volume)), as.integer(as.roman(volume)), as.integer(volume))
+# # na_vol <- which(is.na(volume))
+# # volume2 <- stringr::str_split_fixed(
+# #   pf$Título.do.Trabalho[idx[na_vol]], stringr::fixed("- ", ignore_case = TRUE), n = 2)[, 2]
+# # volume2 <- stringr::word(volume2, 1L)
+# # volume2 <- as.integer(as.roman(volume2))
+# # volume[na_vol] <- volume2
+# # pf$volume <- NA_integer_
+# # pf$volume[idx] <- volume
+# # 
+# # 
+# # 
+# # 
+# # 
+# # 
+# # 
+# # head(esalq)
+# # summary(as.factor(esalq$Source))
+# # 
+# # # 
+# # tmp <- db[, c("Northing", "Easting")]
+# # sp::coordinates(tmp) <- ~ Northing + Easting
+# # 
+# # 
+# # 
+# # 
+# # 
+# # 
+# # 
+# # 
+# # 
+# # # Soil classification
+# # pf$classe <- paste(pf$Classe.de.Solos.Nível.3, " ", pf$X1ª.Ocorrência, sep = "")
+# # Encoding(pf$classe) <- "UTF-8"
+# # pf$sibcs <- sapply(pf$classe, sibcsSymbol)
+# # 
+# # 
+# # 
+# # 
+# # # Save temporary file
+# # write.csv(pf, "data/raw/fe0002/tmp.csv")
+# # rm(pf)
+# # 
+# # # Horizon ####
+# # hz <- db[id_row, c(
+# #   "Código.PA", "Código.Horizonte", "Símbolo.Horizonte", "Profundidade.Superior", "Profundidade.Inferior", 
+# #   id_col)]
+# # str(hz)
+# # 
+# # # Save temporary file
+# # write.csv(hz, "data/raw/fe0002/tmp.csv")
+# # 
+# # # Remove temporary file
+# # system("rm data/raw/fe0002/tmp.csv")
