@@ -421,7 +421,7 @@ pf[idx_uf[i], "y_coord"] <- pf[idx_uf[i], "y_coord"] + 1
 # Pequena alteração na lat e long
 i <- 2
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
-googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+# googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
 pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-12.992200, -46.588977)
 # Alteração na lat, long, município e UF
 i <- 3
@@ -576,7 +576,7 @@ pf[idx_uf[i], c("y_coord")] <- pf[idx_uf[i], c("y_coord")] + 0.5
 # lat, long, município, uf
 i <- 32
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
-googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
+# googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
 pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-18.211775, -39.799376)
 pf[idx_uf[i], c("Município", "UF")] <- c("Mucuri", "BA")
 # lat e long
@@ -650,3 +650,149 @@ i <- 46
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
 pf[idx_uf[i], c("x_coord")] <- pf[idx_uf[i], c("x_coord")] + 2
+
+# Verificar se todos os registros possuem ambas coordenadas x e y.
+length(which(!is.na(pf$x_coord)))
+length(which(!is.na(pf$y_coord)))
+idx <- which(is.na(pf$x_coord) & !is.na(pf$y_coord))
+pf[idx, c(lat_cols, long_cols, "Localização.descritiva", "Referência.Bibliográfica", "Título.do.Trabalho")]
+
+# Coordenadas métricas.
+# Verificar se todos os registros com Northing possuem Easting 
+sum(!is.na(pf$Northing)) == sum(!is.na(pf$Easting))
+
+# Existem registros com valores de Easting < 1000 e Northing < 10000, ou seja, apresentado três dígitos
+# decimais. A correção pode ser feita multiplicando os valores por 1000
+idx <- which(pf$Northing < 10000)
+length(idx)
+pf$Northing[idx] <- pf$Northing[idx] * 1000
+idx <- which(pf$Easting < 1000)
+length(idx)
+pf$Easting[idx] <- pf$Easting[idx] * 1000
+
+# As coordenadas UTM são formadas por seis (Easting) e sete (Northing) dígitos. Aqui eu verifico se todas
+# as coordenadas UTM respeitam essa regra. 70 registros não respeitam essa regra, a maioria deles do trabalho
+# "Inventário das terras em microbacias hidrográficas", desenvolvido em SC, representando 9 municípios.
+idx <- which(!is.na(pf$Northing))
+n <- apply(pf[idx, c("Easting", "Northing")], 1, nchar)
+idx_n <- which(!apply(n, 2, function (x) all(x == c(6, 7))))
+length(idx_n)
+tmp <- pf[idx[idx_n], 
+          c("Easting", "Northing", "Número.PA", "UF", "Título.do.Trabalho", "Localização.descritiva",
+            "Município")]
+rownames(tmp) <- idx[idx_n]
+tmp <- tmp[order(tmp$Município), ]
+unique(tmp[, "Município"])
+
+# Camboriú
+a <- "Camboriú"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=22 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1:2][6, ] <- tmp[tmp$Município == a, 2:1][6, ]
+tmp[tmp$Município == a, 1] <- tmp[tmp$Município == a, 1] / 10
+points(tmp[tmp$Município == a, 1:2])
+
+# Orleans
+a <- "Orleans"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=22 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1][-11] <- tmp[tmp$Município == a, 1][-11] / 10
+tmp[tmp$Município == a, 2][11] <- mean(tmp[tmp$Município == a, 2][-11])
+points(tmp[tmp$Município == a, 1:2])
+
+# Pomerode
+a <- "Pomerode"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=22 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1] <- tmp[tmp$Município == a, 1] / 10
+points(tmp[tmp$Município == a, 1:2])
+
+# Santa Maria da Boa Vista
+a <- "Santa Maria da Boa Vista"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=24 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1] <- tmp[tmp$Município == a, 1] * 10
+tmp[tmp$Município == a, 1:2] <- tmp[tmp$Município == a, 2:1]
+points(tmp[tmp$Município == a, 1:2])
+
+# Santana do Ipanema
+a <- "Santana do Ipanema"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=24 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1] <- tmp[tmp$Município == a, 1] * 10
+points(tmp[tmp$Município == a, 1:2])
+
+# São João do Oeste
+a <- "São João do Oeste"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=22 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1] <- tmp[tmp$Município == a, 1] / 10
+points(tmp[tmp$Município == a, 1:2])
+
+# Seara
+a <- "Seara"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=22 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1:2][3, ] <- tmp[tmp$Município == a, 2:1][3, ]
+tmp[tmp$Município == a, 1] <- tmp[tmp$Município == a, 1] / 10
+points(tmp[tmp$Município == a, 1:2])
+
+# Videira
+a <- "Videira"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=22 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1] <- tmp[tmp$Município == a, 1] / 10
+tmp[tmp$Município == a, 2][2] <- tmp[tmp$Município == a, 2][2] / 10
+points(tmp[tmp$Município == a, 1:2])
+
+# Xanxerê
+a <- "Xanxerê"
+ibge <- getCity(a)
+ibge <- swapAxisOrder(ibge)
+ibge <- sp::spTransform(
+  ibge, sp::CRS("+proj=utm +zone=22 +south +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +units=m +no_defs"))
+sp::plot(ibge, asp = 1, axes = TRUE)
+tmp[tmp$Município == a, 1:2]
+tmp[tmp$Município == a, 1][-3] <- tmp[tmp$Município == a, 1][-3] / 10
+tmp[tmp$Município == a, 2][3] <- tmp[tmp$Município == a, 2][3] / 10
+points(tmp[tmp$Município == a, 1:2])
+
+# Coordenadas corrigidas
+pf[idx[idx_n], c("Easting", "Northing")] <- tmp[as.character(idx[idx_n]), 1:2]
+
+# Conferir se os registros com coordenadas UTM possui dado sobre o fuso.
+pf$utm <- NA_character_
+idx <- which(!is.na(pf$Northing))
+works <- unique(pf[idx, "Título.do.Trabalho"])
