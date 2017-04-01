@@ -1,3 +1,10 @@
+# Contribuição 0003
+# Responsável: Sistema de Informação de Solos Brasileiros
+# Instituição: Embrapa Informática Agropecuária / Embrapa Solos
+
+# Com esse script são processados todos os perfis que contenham, obrigatoriamente, o código de identificação 
+# do perfil [Código PA] no SISB, mas que não possuem qualquer dados de ferro.
+
 # Preparar ambiente de trabalho
 rm(list = ls())
 source("code/helper.R")
@@ -1371,11 +1378,32 @@ cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
 pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 
 # Identificar quantos registros ainda estão sem coordenadas.
+# Ainda são 828 perfis com dados de ferro mas sem coordenadas.
 idx <- which(is.na(pf$x_coord));length(idx)
 length(idx)/nrow(pf)
-sp::plot(states, asp = 1, axes = TRUE)
-points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
-points(pf[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
+
+# Carregar dados pós-processados do SISB (versão 01) e fundir com os dados processados até aqui.
+# Os dados são salvos em um arquivo CSV para uso posterior.
+tmp <- read.csv(
+  "data/raw/fe0003/embrapa-pos-01.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+nrow(tmp)
+tmp <- merge(
+  pf[-idx, c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology")], 
+  tmp, by = "Código.PA", all = TRUE)
+nrow(tmp)
+tmp$x_coord <- ifelse(!is.na(tmp$x_coord.y), tmp$x_coord.y, tmp$x_coord.x)
+tmp$y_coord <- ifelse(!is.na(tmp$y_coord.y), tmp$y_coord.y, tmp$y_coord.x)
+tmp$observation_date <- ifelse(!is.na(tmp$observation_date.y), tmp$observation_date.y, tmp$observation_date.x)
+tmp$land_use <- ifelse(!is.na(tmp$land_use.y), tmp$land_use.y, tmp$land_use.x)
+tmp$litology <- ifelse(!is.na(tmp$litology.y), tmp$litology.y, tmp$litology.x)
+tmp <- tmp[, -(2:11)]
+sum(is.na(tmp$x_coord))
+str(tmp)
+sp::plot(states, asp = 1, axes = T)
+points(tmp[, c("x_coord", "y_coord")], cex = 0.5)
+write.table(tmp, file = "data/raw/fe0003/embrapa-pos-02.csv", sep = ";", fileEncoding = "UTF-8")
+
+
 
 
 
