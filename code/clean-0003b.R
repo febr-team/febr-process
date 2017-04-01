@@ -7,6 +7,11 @@ source("code/helper-utf8.R", encoding = "UTF-8")
 db <- read.csv(
   "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, 
   encoding = "UTF-8")
+# z <- read.csv(
+#   "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, 
+#   encoding = "UTF-8")
+# z <- z[!duplicated(z$Código.PA), ]
+# sum(pf$UF[idx] == "RS", na.rm = T)
 
 # Identificar linhas e colunas contendo dados de ferro
 id_col <- colnames(db)[grep("Fe", colnames(db))] 
