@@ -1417,9 +1417,13 @@ tmp <- read.csv(
   "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 nrow(tmp)
 tmp <- merge(
-  pf[-idx, c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology")], 
+  pf[-idx, 
+     c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology", "Município", "UF")], 
   tmp, by = "Código.PA", all = TRUE)
 nrow(tmp)
+tmp$Município <- ifelse(!is.na(tmp$Município.x), tmp$Município.x, tmp$Município.y)
+tmp$UF <- ifelse(!is.na(tmp$UF.x), tmp$UF.x, tmp$UF.y)
+tmp <- tmp[, !colnames(tmp) %in% c("UF.x", "UF.y", "Município.x", "Município.y")]
 sum(is.na(tmp$x_coord))
 str(tmp)
 sp::plot(states, asp = 1, axes = T)

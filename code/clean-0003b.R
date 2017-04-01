@@ -1388,7 +1388,8 @@ tmp <- read.csv(
   "data/raw/fe0003/embrapa-pos-01.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 nrow(tmp)
 tmp <- merge(
-  pf[-idx, c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology")], 
+  pf[-idx, 
+     c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology", "Município", "UF")], 
   tmp, by = "Código.PA", all = TRUE)
 nrow(tmp)
 tmp$x_coord <- ifelse(!is.na(tmp$x_coord.y), tmp$x_coord.y, tmp$x_coord.x)
@@ -1396,7 +1397,10 @@ tmp$y_coord <- ifelse(!is.na(tmp$y_coord.y), tmp$y_coord.y, tmp$y_coord.x)
 tmp$observation_date <- ifelse(!is.na(tmp$observation_date.y), tmp$observation_date.y, tmp$observation_date.x)
 tmp$land_use <- ifelse(!is.na(tmp$land_use.y), tmp$land_use.y, tmp$land_use.x)
 tmp$litology <- ifelse(!is.na(tmp$litology.y), tmp$litology.y, tmp$litology.x)
+tmp$Município <- ifelse(!is.na(tmp$Município.x), tmp$Município.x, tmp$Município.y)
+tmp$UF <- ifelse(!is.na(tmp$UF.x), tmp$UF.x, tmp$UF.y)
 tmp <- tmp[, -(2:11)]
+tmp <- tmp[, !colnames(tmp) %in% c("UF.x", "UF.y", "Município.x", "Município.y")]
 sum(is.na(tmp$x_coord))
 str(tmp)
 sp::plot(states, asp = 1, axes = T)
