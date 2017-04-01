@@ -2,6 +2,9 @@
 # Responsável: Sistema de Informação de Solos Brasileiros
 # Instituição: Embrapa Informática Agropecuária / Embrapa Solos
 
+# Com esse script são processados todos os registros que contenham, obrigatoriamente, algum dado de ferro e o 
+# código de identificação do perfil [Código PA] no SISB.
+
 # Preparar ambiente de trabalho
 rm(list = ls())
 source("code/helper.R")
@@ -13,7 +16,7 @@ db <- read.csv(
   paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 
 # Identificar linhas e colunas contendo dados de ferro
-id_col <- colnames(db)[grep("Fe", colnames(db))] 
+id_col <- colnames(db)[grep("Fe", colnames(db))]
 id_col
 id_col <- id_col[-2]
 idx <- which(!is.na(db[, id_col]), arr.ind = TRUE)
@@ -1404,9 +1407,45 @@ cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
 pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 
 # Identificar quantos registros ainda estão sem coordenadas.
+# Ainda são 2 mil perfis com dados de ferro mas sem coordenadas.
 idx <- which(is.na(pf$x_coord));length(idx)
 length(idx)/nrow(pf)
-# Ainda são 2 mil perfis com dados de ferro mas sem coordenadas. Ainda é muita coisa!!! Contudo, nem mesmo a
+
+# Recarregar dados do SISB e fundir com os dados processados até aqui.
+# Os dados são salvos em um arquivo CSV para uso posterior.
+tmp <- read.csv(
+  "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+nrow(tmp)
+tmp <- merge(
+  pf[-idx, c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology")], 
+  tmp, by = "Código.PA", all = TRUE)
+nrow(tmp)
+sum(is.na(tmp$x_coord))
+str(tmp)
+sp::plot(states, asp = 1, axes = T)
+points(tmp[, 2:3], cex = 0.5)
+write.table(tmp, file = "data/raw/fe0003/embrapa-pos-01.csv", sep = ";", fileEncoding = "UTF-8")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Ainda é muita coisa!!! Contudo, nem mesmo a
 # base de dados da Esalq possui tais informações. Numa rápida visita ao SISB, verifiquei que, para vários 
 # perfis, as coordenadas simplesmente não foram digitadas. Em alguns casos elas foram inseridas junto da 
 # descrição da localização geográfica. Da mesma forma, há inúmeros perfis para os quais os dados de ferro
