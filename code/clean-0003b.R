@@ -7,6 +7,11 @@ source("code/helper-utf8.R", encoding = "UTF-8")
 db <- read.csv(
   "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, 
   encoding = "UTF-8")
+# z <- read.csv(
+#   "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, 
+#   encoding = "UTF-8")
+# z <- z[!duplicated(z$Código.PA), ]
+# sum(pf$UF[idx] == "RS", na.rm = T)
 
 # Identificar linhas e colunas contendo dados de ferro
 id_col <- colnames(db)[grep("Fe", colnames(db))] 
@@ -793,6 +798,650 @@ points(tmp[tmp$Município == a, 1:2])
 pf[idx[idx_n], c("Easting", "Northing")] <- tmp[as.character(idx[idx_n]), 1:2]
 
 # Conferir se os registros com coordenadas UTM possui dado sobre o fuso.
+# Buscar pelo nome da cidade no Google Earth junto de camada contendo os quadrantes UTM.
+# http://www.processamentodigital.com.br/wp-content/uploads/2011/08/UTMWorldZone.kml
 pf$utm <- NA_character_
 idx <- which(!is.na(pf$Northing))
 works <- unique(pf[idx, "Título.do.Trabalho"])
+#
+i <- 1
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 2
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 3
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 4
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 5
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Município"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 6
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Título.do.Trabalho"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 7
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Município"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 8
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Município"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 9
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, "Município"][id_utm]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 10
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 11
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 12
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 13
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 14
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 15
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 16
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 17
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 18
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 19
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 20
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 21
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 22
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 23
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 24
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 25
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 26
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 27
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 28
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 29
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 30
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+#
+i <- 31
+id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
+pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+
+# Converter coordenadas métricas para grau decimal.
+idx_crs <- unique(pf[idx, "utm"])
+for (i in 1:length(idx_crs)) {
+  j <- which(pf$utm == idx_crs[i])
+  tmp <- pf[j, c("Easting", "Northing")]
+  sp::coordinates(tmp) <- c("Easting", "Northing")
+  sp::proj4string(tmp) <- sp::CRS(idx_crs[i])
+  tmp <- sp::spTransform(tmp, states@proj4string)
+  pf[j, c("x_coord", "y_coord")] <- tmp@coords
+}
+
+# Visualizar se todos os pontos se encontram dentro do território nacional
+# Dois registros estão fora.
+sp::plot(states, asp = 1, axes = T)
+points(pf[idx, c("x_coord", "y_coord")])
+text(pf[idx, c("x_coord", "y_coord")], labels = idx, pos = 4)
+#
+pf[2272, 
+   c("Easting", "Northing", "UF", "Título.do.Trabalho", "Localização.descritiva", "Município", "Número.PA",
+     "Classificação.Original")]
+pf[2272, "Northing"] <- 7656359
+#
+pf[689, 
+   c("Easting", "Northing", "UF", "Título.do.Trabalho", "Localização.descritiva", "Município", "Número.PA",
+     "Classificação.Original")]
+pf$Northing[pf$Município == "Santana do Ipanema"]
+pf[689, "Northing"] <- 8967805
+
+# Rodar novamente conversão de coordenadas para todos os registros, agora com os dois anteriores corrigidos.
+# Uma nova verificação do posicionamento de todos os registros dentro do território nacional será feita ao
+# final do exercício, quando coordenadas de outras bases de dados forem adicionadas.
+idx_crs <- unique(pf[idx, "utm"])
+for (i in 1:length(idx_crs)) {
+  j <- which(pf$utm == idx_crs[i])
+  tmp <- pf[j, c("Easting", "Northing")]
+  sp::coordinates(tmp) <- c("Easting", "Northing")
+  sp::proj4string(tmp) <- sp::CRS(idx_crs[i])
+  tmp <- sp::spTransform(tmp, states@proj4string)
+  pf[j, c("x_coord", "y_coord")] <- tmp@coords
+}
+
+# Identificar registros sem coordenadas. Existem quase 3 mil registros sem coordenadas. É muita coisa!!!
+idx <- which(is.na(pf$x_coord))
+length(idx)
+length(pf$x_coord)
+
+# Identificar registros do projeto RADAMBRASIL
+pf$radam <- FALSE
+pf$radam[grep("radambrasil", pf$Título.do.Trabalho, ignore.case = TRUE)] <- TRUE
+
+# Carregar dados compilados por pesquisadores da Esalq
+# A atibuição de coordenadas se dá com base, primeiro, na identificação dos trabalhos por ano conforme a base
+# de dados da Esalq.
+file <- "fe0003/esalq.csv"
+esalq <- read.csv(
+  paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+esalq <- esalq[order(esalq$PubYear), ]
+anos <- unique(esalq$PubYear)
+# Levantamento de Reconhecimento dos Solos do Estado de São Paulo (Contribuição à Carta de Solos do Brasil).
+# Comissão de Solos. Boletim do Serviço Nacional de Pesquisas Agronômicas (nº 12) . Rio de Janeiro, Ministério
+# da Agricultura, Centro Nacional de Ensino e Pesquisas Agronômicas. 1960, 634p.
+i <- 1
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), "Source"])
+unique(pf[idx[j], "Referência.Bibliográfica"])
+l <- which(esalq$PubYear == anos[i]);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"])
+cbind(pf[idx[j], "Número.PA"], esalq[which(esalq$PubYear == anos[i]), "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[which(esalq$PubYear == anos[i]), "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <-
+  esalq[which(esalq$PubYear == anos[i]), c("longitude", "latitude")][k, ]
+# Levantamento Exploratório dos Solos da Região Sob Influência da Cia. Vale do Rio Doce.
+i <- 2
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número")])
+n <- 13
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i]);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"])
+cbind(pf[idx[j], "Número.PA"], esalq[which(esalq$PubYear == anos[i]), "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[which(esalq$PubYear == anos[i]), "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <-
+  esalq[which(esalq$PubYear == anos[i]), c("longitude", "latitude")][k, ]
+# LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DO RIO GRANDE DO NORTE
+i <- 3
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber")])
+unique(pf[idx[j], c("Referência.Bibliográfica", "Número")])
+n <- 21
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"])
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Ministério da Agricultura - Departamento Nacional de Pesquisa Agropecuária: Divisão de Pesquisa Pedológica.
+# Levantamento de reconhecimento dos solos do sul do Estado de Mato Grosso. Bolteim técnico, n.18, 839p, 1970.
+j <- which(pf$Número[idx] == 18);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber")])
+unique(pf[idx[j], c("Referência.Bibliográfica", "Número")])
+n <- 18
+j <- which(pf$Ano.de.Publicação[idx] == 1970 & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- stringr::str_split(pf[idx[j], "Número.PA"], " ", 2, simplify = TRUE)
+pa <- apply(pa, 1, function (x) as.numeric(x)[!is.na(as.numeric(x))])
+k <- match(pa, esalq[l, "OrgProfID"])
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DE PERNAMBUCO - VOLUME II
+i <- 4
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número")])
+n <- 26
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Levantamento exploratório - Reconhecimento de solos do Estado do Ceará
+i <- 5
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação")])
+n <- 28
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("P", "", pf[idx[j], "Número.PA"])
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 1.
+n <- 1
+j <- which(pf$Número[idx] == n);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Referência.Bibliográfica", "Número")])
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 2.
+n <- 2
+j <- which(pf$Número[idx] == n);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Referência.Bibliográfica", "Número")])
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 3.
+n <- 3
+j <- which(pf$Número[idx] == n);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Referência.Bibliográfica", "Número")])
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 4.
+i <- 6
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação")])
+n <- 4
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 5.
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação")])
+n <- 5
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 8.
+i <- 7
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 8
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 7.
+n <- 7
+pf$Número[which(pf$Código.Trabalho == 707)] <- n
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 12.
+i <- 8
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 12
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS\nDA MARGEM ESQUERDA DO RIO SÃO FRANCISCO-ESTADO DA BAHIA.
+n <- 38
+j <- which(pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+unique(pf[idx[j], c("Referência.Bibliográfica", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+j <- which(pf$Número[idx] == n & pf$Ano.de.Publicação[idx] == 1975);length(j)
+pa <- stringr::str_split(pf[idx[j], "Número.PA"], "-")
+pa <- sapply(pa, function (x) ifelse(length(x) == 2, paste("E", x[1], sep = ""), x))
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 13.
+i <- 9
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 13
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 15.
+n <- 15
+j <- which(pf$Número[idx] == n & pf$radam[idx]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+pa <- gsub("PERFIL Nº ", "", pf[idx[j], "Número.PA"]) 
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 16.
+n <- 16
+j <- which(pf$Número[idx] == n & pf$radam[idx]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+pa <- gsub("PERFIL Nº ", "", pf[idx[j], "Número.PA"])
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 17.
+i <- 10
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 17
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 18.
+n <- 18
+pf$Número[which(pf$Código.Trabalho == 753)] <- n
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# LEVANTAMENTO DE RECONHECIMENTO DOS SOLOS DO ESTADO DO ESPIRITO SANTO
+n <- 45
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("P", "", pf[idx[j], "Número.PA"])
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Levantamento Exploratório - Reconhecimento de Solos do Norte de MInas Gerais (Área de Atuação da SUDENE)
+i <- 11
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 60
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("Perfil ", "", pf[idx[j], "Número.PA"])
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DA MARGEM DIREITA DO RIO SÃO FRANCISCO. ESTADO DA BAHIA -
+# VOLUME II
+n <- 52
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- stringr::str_trim(gsub("Perfil ", "", pf[idx[j], "Número.PA"]))
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 20.
+i <- 12
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 20
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 21.
+i <- 13
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 21
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(as.numeric(pf[idx[j], "Número.PA"]), esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 22.
+n <- 22
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+k <- match(as.numeric(pf[idx[j], "Número.PA"]), esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 23.
+n <- 23
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n & pf$radam[idx]);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceVolume == n);length(l)
+pa <- gsub("P", "", esalq[l, "OrgProfID"])
+k <- match(pf[idx[j], "Número.PA"], pa);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Levantamento de Reconhecimento Dos Solos do Estado do Paraná
+i <- 16
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 27
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("Perfil nº", "", pf[idx[j], "Número.PA"])
+pa <- gsub("PC nº", "C", pa)
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Levantamento Exploratório-Reconhecimento de Solos do Estado do Maranhão
+i <- 17
+anos[i]
+j <- which(pf$Ano.de.Publicação[idx] == anos[i]);length(j)
+unique(esalq[which(esalq$PubYear == anos[i]), c("Source", "SourceNumber", "SourceVolume", "SourceType")])
+unique(pf[idx[j], c("Título.do.Trabalho", "Número", "Ano.de.Publicação", "Código.Trabalho")])
+n <- 35
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("Perfil ", "", pf[idx[j], "Número.PA"])
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+# Levantamento Exploratório-Reconhecimento de Solos do Estado do Piauí
+n <- 36
+j <- which(pf$Ano.de.Publicação[idx] == anos[i] & pf$Número[idx] == n);length(j)
+l <- which(esalq$PubYear == anos[i] & esalq$SourceNumber == n);length(l)
+pa <- gsub("Perfil ", "", pf[idx[j], "Número.PA"])
+k <- match(pa, esalq[l, "OrgProfID"]);sum(!is.na(k))
+cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
+pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
+
+# Identificar quantos registros ainda estão sem coordenadas.
+idx <- which(is.na(pf$x_coord));length(idx)
+length(idx)/nrow(pf)
+sp::plot(states, asp = 1, axes = TRUE)
+points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
+points(pf[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
+
+
+
+
+# write.csv(pf, "data/raw/fe0003/tmp-profiles-b.csv", fileEncoding = "UTF-8")
+# 
+# # Atribuir informação da UF para dados da Esalq
+# tmp <- esalq[, c("latitude", "longitude")]
+# sp::coordinates(tmp) <- c("latitude", "longitude")[2:1]
+# sp::proj4string(tmp) <- sp::proj4string(states)
+# tmp <- sp::over(tmp, states)
+# esalq$UF <- tmp
+# rm(tmp)
+# uf <- unique(pf$UF)
+# 
+# # RS
+# i <- 9
+# uf[i]
+# j <- which(pf$UF[idx] == uf[i]);length(j)
+# l <- which(esalq$UF == uf[i]);length(l)
+# k <- lapply(pf[idx[j], "Classificação.Original"], function (x) {
+#   x <- paste(stringr::str_split_fixed(x, " ", Inf)[1:4], collapse = " ")
+#   agrep(x, esalq[l, "SiBCS1998"], ignore.case = T)
+# })
+# k
+# m <- 172
+# pf[idx[j], c("Classificação.Original", "Número.PA")][m, ]
+# esalq[l, c("SiBCS1998", "OrgProfID")][k[[m]], ]
+# 
+# 
+# 
+# k <- match(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"]);sum(!is.na(k))
+# cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
+# na.exclude(cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k]))
+# 
+# pa <- pf[l, "Número.PA"]
+# pb <- esalq[esalq$UF == uf[i], "OrgProfID"]
+# k <- match(pa, pb);sum(!is.na(k))
+# 
+# 
+# # RS
+# i <- 17
+# uf[i]
+# work <- unique(
+#   pf[idx, ][pf$UF[idx] == uf[i], c("Título.do.Trabalho", "Tipo.de.Publicação", "Referência.Bibliográfica")])
+# nrow(work)
+# ##
+# j <- 1
+# work[j, ]
+# pa <- pf[idx, ][pf$UF[idx] == uf[i] & pf$Título.do.Trabalho[idx] == work$Título.do.Trabalho[j], "Número.PA"]
+# pa
+# tmp <- esalq[
+#   # esalq$SourceType == "BT" &
+#   # esalq$Source == "SNLCS" &
+#     # esalq$PubYear == 1973 &
+#     # esalq$SourceNumber == 30 &
+#     # esalq$SourceVolume == 8 &
+#     esalq$UF == uf[i] &
+#     !is.na(esalq$esalq_id)
+#   , ]
+# tmp[, c("PubYear", "Source", "SourceType", "SourceNumber", "SourceVolume", "UF")]
+# pa;tmp[, "OrgProfID"]
+# 
+# tmp$PubYear

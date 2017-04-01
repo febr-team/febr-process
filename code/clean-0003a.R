@@ -1414,6 +1414,7 @@ length(idx)/nrow(pf)
 # numa escala de trabalho maior, como é o caso aqui, depois passando para o ajuste fino, trabalho por 
 # trabalho.
 
+write.csv(pf, "data/raw/fe0003/tmp-profiles-a.csv", fileEncoding = "UTF-8")
 
 # 
 # 
