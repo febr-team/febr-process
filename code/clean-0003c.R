@@ -520,6 +520,184 @@ sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
 idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
 db <- db[-idx, ]
 
+# V Reunião de Classificação, Correlação e Aplicação de Levantamentos de Solos
+# n = 1
+# O perfil não possui dados analíticos.
+tit <- "V Reunião de Classificação, Correlação e Aplicação de Levantamentos de Solos"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "EX - 01 V RCC")
+db$Símbolo.Horizonte[idx]
+
+# Trabalhos com perfis já existentes em outros boletins.
+# Estes servem apenas para identificar as coordenadas dos perfis da base de dados da Esalq.
+esalq <- read.csv(
+  "data/raw/fe0003/esalq.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+esalq <- esalq[order(esalq$PubYear), ]
+
+# Atribuir informação da UF para dados da Esalq
+states <- raster::shapefile("data/gis/states.shp")
+tmp <- esalq[, c("latitude", "longitude")]
+sp::coordinates(tmp) <- c("latitude", "longitude")[2:1]
+sp::proj4string(tmp) <- sp::proj4string(states)
+tmp <- sp::over(tmp, states)
+esalq$UF <- tmp
+rm(tmp)
+
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 21.
+# Os dados dos perfis foram inseridos no trabalho:
+# - Levantamento exploratório - Reconhecimento de solos do Estado do Ceará
+# Os trabalhos podem ser correlacionados com base na coluna 'Número.de.Campo'. O perfil 5 não
+# informa o 'Número.de.Campo'. Corrige-se com base no original.
+# 34 - EXTRA (17 CE) não foi inserido no trabalho original.
+# Parece que a mesma numeração para os perfis foi usada no RADAM e no levantamento.
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 21."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+tit2 <- "Levantamento exploratório - Reconhecimento de solos do Estado do Ceará "
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+db[idx, c("Número.PA", "Número.de.Campo")][2, 2] <- "60 CE"
+unique(db[idx, c("Número.de.Campo")])[
+  !unique(db[idx, c("Número.de.Campo")]) %in% unique(db[idx2, c("Número.de.Campo")])]
+# Procurar coordenadas para o Levantamento de solos do Ceará
+i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
+j <- db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+k <- which(esalq$Source == "RADAM" & esalq$UF == "CE" & esalq$SourceVolume == 21)
+esalq[k, c("OrgProfID", "longitude" , "latitude")]
+l <- which(db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx]) & is.na(db$x_coord[idx2]))
+pa <- gsub("P", "", db[idx2[l], "Número.PA"])
+m <- match(pa, esalq[k, "OrgProfID"])
+db[idx2[l], c("x_coord", "y_coord")] <- esalq[k[m], c("longitude", "latitude")]
+
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 23.
+# Os dados dos perfis foram inseridos nos trabalhos:
+# - Levantamento exploratório - Reconhecimento de solos do Estado do Ceará 
+# - LEVANTAMENTO EXPLORATÓRIO-RECONHECIMENTO DE SOLOS DO ESTADO DA PARAÍBA (VOLUME I) E INTERPRETAÇÃO PARA 
+#   USO AGRÍCOLA DOS SOLOS DO ESTADO DA PARAÍBA (VOLUME II). 
+# - LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DO RIO GRANDE DO NORTE
+# - LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DE PERNAMBUCO - VOLUME II
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 23."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+tit2 <- "LEVANTAMENTO EXPLORATÓRIO-RECONHECIMENTO DE SOLOS DO ESTADO DA PARAÍBA (VOLUME I) E INTERPRETAÇÃO PARA USO AGRÍCOLA DOS SOLOS DO ESTADO DA PARAÍBA (VOLUME II)."
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+# Procurar coordenadas para o Levantamento de solos da Paraíba
+i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
+j <- db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+k <- which(esalq$Source == "RADAM" & esalq$UF == "PB")
+esalq[k, c("OrgProfID", "longitude" , "latitude")]
+l <- which(db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx]) & is.na(db$x_coord[idx2]))
+pa <- gsub("Perfil - ", "", db[idx2[l], "Número.PA"])
+pb <- gsub("PB", "", esalq[k, "OrgProfID"])
+m <- match(pa, pb)
+db[idx2[l], c("x_coord", "y_coord")] <- esalq[k[m], c("longitude", "latitude")]
+# Procurar coordenadas para o Levantamento de solos do Rio Grande do Norte
+tit2 <- "LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DO RIO GRANDE DO NORTE"
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
+j <- db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+k <- which(esalq$Source == "RADAM" & esalq$UF == "RN")
+esalq[k, c("OrgProfID", "longitude" , "latitude")]
+
+# Procurar coordenadas para o Levantamento de solos de Pernambuco
+tit2 <- "LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DE PERNAMBUCO - VOLUME II "
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
+j <- db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+k <- which(esalq$Source == "RADAM" & esalq$UF == "PE")
+esalq[k, c("OrgProfID", "longitude" , "latitude")]
+
+# Procurar coordenadas para o Levantamento de solos do Ceará
+tit2 <- "Levantamento exploratório - Reconhecimento de solos do Estado do Ceará "
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
+j <- db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+k <- which(esalq$Source == "RADAM" & esalq$UF == "CE")
+esalq[k, c("OrgProfID", "longitude" , "latitude")]
+l <- which(db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx]) & is.na(db$x_coord[idx2]))
+pa <- gsub("P", "", db[idx2[l], "Número.PA"])
+pb <- gsub("CE", "", esalq[k, "OrgProfID"])
+m <- match(pa, pb)
+db[idx2[l], c("x_coord", "y_coord")] <- esalq[k[m], c("longitude", "latitude")]
+
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 24.
+# Os dados dos perfis foram inseridos no seguinte trabalho:
+# - LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DA MARGEM DIREITA DO RIO SÃO FRANCISCO. ESTADO DA 
+#   BAHIA - VOLUME II 
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 24."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+tit2 <- "LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DA MARGEM DIREITA DO RIO SÃO FRANCISCO. ESTADO DA BAHIA - VOLUME II"
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+# Procurar coordenadas para o Levantamento de solos da Bahia
+i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
+j <- db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+k <- which(esalq$Source == "RADAM" & esalq$UF == "BA" & esalq$SourceVolume == 24)
+esalq[k, c("OrgProfID", "longitude" , "latitude")]
+l <- which(db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx]) & is.na(db$x_coord[idx2]))
+pa <- db[idx2[l], "Número.de.Campo"]
+pb <- db$Número.de.Campo[idx]
+m <- match(pa, pb)
+pc <- db[idx[m], c("Número.PA")]
+pc <- gsub("20", "32", pc) # Parece-me que o correto é 32 ao invés de 20
+pc[grep("-EXTRA", pc)] <- paste("E", pc[grep("-EXTRA", pc)], sep = "")
+pc <- gsub("-EXTRA", "", pc)
+n <- match(pc, esalq[k, "OrgProfID"])
+db[idx2[l], c("x_coord", "y_coord")] <- esalq[k[n], c("longitude", "latitude")]
+
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 28.
+# Os dados dos perfis foram inseridos nos seguintes trabalhos:
+# - Levantamento de reconhecimento dos solos do Sul do Estado de Mato Grosso.
+# - Levantamento de reconhecimento dos solos do nordeste do Estado do Paraná.
+# Os dados do RADAM não possuem número de campo. Atribui-se os respectivos números dos perfis do levantamento
+# do Mato Grosso. O levantamento dos solos do nordeste do Paraná não está no SISB.
+# Infelizmente não é possível correlacionar os dados.
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 28."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+tit2 <- "Levantamento de reconhecimento dos solos do sul do estado de Mato Grosso"
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+db[idx, "Número.de.Campo"] <- stringr::str_split_fixed(db[idx, "Observações"], "perfil n° ", 2)[, 2]
+db[idx, "Número.de.Campo"] <- gsub(".", "", db[idx, "Número.de.Campo"], fixed = TRUE)
+# Procurar coordenadas para o Levantamento de solos do sul do Mato Grosso
+i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
+j <- gsub("Perfil ", "", db$Número.PA[idx2]) %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+k <- which(esalq$Source == "RADAM" & esalq$UF == "MS" & esalq$SourceVolume == 28)
+esalq[k, c("OrgProfID", "longitude" , "latitude", "PubYear")]
+
+
+i <- which(db$UF == "MS" | db$UF == "MT" & is.na(db$x_coord));length(i)
+unique(db[i, c("Número.PA", "Número.de.Campo", "x_coord")])
+
+
+sp::plot(states, asp = 1, axes = TRUE)
+points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
+points(db[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
+
+
+
 
 
 # i <- agrep("PODZÓLICO VERMELHO-AMARELO Tb Álico A moderado textura argilosa/ muito argilosa fase floresta tropical subperenifólia relevo plano", 
