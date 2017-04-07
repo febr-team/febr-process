@@ -520,7 +520,84 @@ sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
 idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
 db <- db[-idx, ]
 
+# V Reunião de Classificação, Correlação e Aplicação de Levantamentos de Solos
+# n = 1
+# O perfil não possui dados analíticos.
+tit <- "V Reunião de Classificação, Correlação e Aplicação de Levantamentos de Solos"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "EX - 01 V RCC")
+db$Símbolo.Horizonte[idx]
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Trabalhos com perfis já existentes em outros boletins.
+# Estes servem apenas para identificar as coordenadas dos perfis da base de dados da Esalq.
+
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 21.
+# Os dados dos perfis foram inseridos no trabalho:
+# - Levantamento exploratório - Reconhecimento de solos do Estado do Ceará
+# Os trabalhos podem ser correlacionados com base na coluna 'Número.de.Campo'. Contudo, o perfil 5 não
+# informa o 'Número.de.Campo'. Corrige-se com base no original.
+# 34 - EXTRA (17 CE) não foi inserido no trabalho original.
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 21."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+tit2 <- "Levantamento exploratório - Reconhecimento de solos do Estado do Ceará "
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+db[idx, c("Número.PA", "Número.de.Campo")][1, 2] <- "60 CE"
+unique(db[idx, c("Número.de.Campo")])[
+  !unique(db[idx, c("Número.de.Campo")]) %in% unique(db[idx2, c("Número.de.Campo")])]
+
+i <- db$Número.de.Campo[idx2] %in% unique(db$Número.de.Campo[idx])
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")][i, ])
+
+
+
+
+
+
+
+
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 23.
+# Os dados dos perfis foram inseridos nos trabalhos:
+# - Levantamento exploratório - Reconhecimento de solos do Estado do Ceará 
+# - LEVANTAMENTO EXPLORATÓRIO-RECONHECIMENTO DE SOLOS DO ESTADO DA PARAÍBA (VOLUME I) E INTERPRETAÇÃO PARA 
+#   USO AGRÍCOLA DOS SOLOS DO ESTADO DA PARAÍBA (VOLUME II). 
+# - LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DO RIO GRANDE DO NORTE
+# - LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DE PERNAMBUCO - VOLUME II
+# Os dados podem ser correlacionados usando o campo 'Número.de.Campo'.
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 23."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+
+tit2 <- "LEVANTAMENTO EXPLORATÓRIO-RECONHECIMENTO DE SOLOS DO ESTADO DA PARAÍBA (VOLUME I) E INTERPRETAÇÃO PARA USO AGRÍCOLA DOS SOLOS DO ESTADO DA PARAÍBA (VOLUME II)."
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+
+tit3 <- "LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DO RIO GRANDE DO NORTE"
+idx3 <- which(db$Título.do.Trabalho == tit3)
+unique(db[idx3, c("Número.PA", "Número.de.Campo", "x_coord")])
+
+tit4 <- "LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DE PERNAMBUCO - VOLUME II "
+idx4 <- which(db$Título.do.Trabalho == tit4)
+unique(db[idx4, c("Número.PA", "Número.de.Campo", "x_coord")])
+
+# 
 
 # i <- agrep("PODZÓLICO VERMELHO-AMARELO Tb Álico A moderado textura argilosa/ muito argilosa fase floresta tropical subperenifólia relevo plano", 
 #       db$Classificação.Original, ignore.case = T)
