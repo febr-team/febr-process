@@ -275,38 +275,283 @@ nrow(db[db$Título.do.Trabalho == tit, ])
 length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
 sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
 
+# Levantamento de reconhecimento de baixa intensidade dos solos e avaliação da aptidão agrícola das terras de
+# área piloto no município de Barreirinha - Estado do Amazonas.
+# n <- 14
+# O levantamento foi inserido duas vezes no SISB, a primeira delas usando caixa alta para o título, para o
+# qual foi inserido apenas um perfil. Esse perfil também foi inserido na segunda vez que o trabalho foi 
+# inserido, portanto pode ser deletado. Os dados analíticos existem, mas não foram digitados. Talvez tenham 
+# sido aproveitados em outro levantamento.
+tit <- "Levantamento de reconhecimento de baixa intensidade dos solos e avaliação da aptidão agrícola das terras de área piloto no município de Barreirinha - Estado do Amazonas."
+idx <- which(db$Título.do.Trabalho == tit)
+length(idx)
+tit <- "Levantamento de Reconhecimento de Baixa Intensidade dos Solos e Avaliação da Aptidão Agricola das Terras de Área Piloto no Município de Barreirinha - Estado do Amazonas"
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento de Reconhecimento de Média Intensidade do Solos da Região dos Tabuleiros Costeiros e da Baixada
+# Litorânea do Estado de Sergipe
+# n = 2
+# Os dois perfis foram compilados de outros tabalhos. Segundo o documento original, existem 113 perfis, onde
+# apenas 39 foram coletados. O perfil 67 na verdade é o perfil 71. Mas os dados já foram digitados. Os dados
+# do perfil 77 também já foram digitados. Os dois podem ser deletados.
+tit <- "Levantamento de Reconhecimento de Média Intensidade do Solos da Região dos Tabuleiros Costeiros e da Baixada Litorânea do Estado de Sergipe"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "PERFIL 77")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# LEVANTAMENTO DE RECONHECIMENTO DE MÉDIA INTENSIDADE DOS SOLOS E AVALIAÇÃO DA APTIDÃO AGRÍCOLA DAS TERRAS DA 
+# ÁREA DO PÓLO PRÉ-AMAZÔNIA MARANHENSE
+# n = 1
+# Um horizonte extra foi inserido por engano. Pode ser deletado.
+tit <- "LEVANTAMENTO DE RECONHECIMENTO DE MÉDIA INTENSIDADE DOS SOLOS E AVALIAÇÃO DA APTIDÃO AGRÍCOLA DAS TERRAS DA ÁREA DO PÓLO PRÉ-AMAZÔNIA MARANHENSE"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "AMOSTRA EX. 52")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento de Reconhecimento de Média Intensidade dos Solos e Avaliação da Aptidão Agrícola das Terras da 
+# Área do Pólo Tapajós.
+# n = 2
+# Horizontes adicionados por engano. Podem ser deletados.
+tit <- "Levantamento de Reconhecimento de Média Intensidade dos Solos e Avaliação da Aptidão Agrícola das Terras da Área do Pólo Tapajós."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "Extra 30")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "Extra 22")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# LEVANTAMENTO DE RECONHECIMENTO DE MÉDIA INTENSIDADE DOS SOLOS E AVALIAÇÃO DA APTIDÃO AGRÍCOLA DAS TERRAS DA
+# MARGEM DIREITA DO RIO PARANÃ - ESTADO DE GOIÁS
+# n = 1
+# Horizonte adicionado erroneamente. Pode ser deletado.
+tit <- "LEVANTAMENTO DE RECONHECIMENTO DE MÉDIA INTENSIDADE DOS SOLOS E AVALIAÇÃO DA APTIDÃO AGRÍCOLA DAS TERRAS DA MARGEM DIREITA DO RIO PARANÃ - ESTADO DE GOIÁS"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "FERTILIDADE N53")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento de Reconhecimento de Média Intensidade dos Solos e Avaliação da Aptidão Agrícola das Terras de 
+# 21.000 hectares no Município de Tefé, Amazonas.
+# n = 13
+# Segundo o original, há apenas 11 perfis. Aqui temos o perfil 5 repetido duas vezes. Entratanto, os dados 
+# analíticos não foram inseridos. Talvez tenham sido usados em outro estudo. Deletar os dois registros 
+# repetidos do perfil 5.
+tit <- "Levantamento de Reconhecimento de Média Intensidade dos Solos e Avaliação da Aptidão Agrícola das Terras de 21.000 hectares no Município de Tefé, Amazonas."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown" & db$Número.de.Campo == "EMADE-AM-4")
+db <- db[-idx[-1], ]
+
+# Levantamento de Reconhecimento de Média Intensidade dos Solos e Avaliação da Aptidão Agrícola das Terras em 
+# 100.000 Hectares da Gleba Machadinho, no Município de Ariquemes, Rondônia.
+# n = 1
+# Horizonte digitado por engano. Deletar.
+tit <- "Levantamento de Reconhecimento de Média Intensidade dos Solos e Avaliação da Aptidão Agrícola das Terras em 100.000 Hectares da Gleba Machadinho, no Município de Ariquemes, Rondônia."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "Perfil 19")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# LEVANTAMENTO DE RECONHECIMENTO DOS SOLOS DO DISTRITO FEDERAL
+# n = 2
+# Os dois horizontes foram inseridos sem necessidade. Deletar.
+tit <- "LEVANTAMENTO DE RECONHECIMENTO DOS SOLOS DO DISTRITO FEDERAL"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "PERFIL DF 49")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "PERFIL DF 7")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento de Reconhecimento Dos Solos do Estado do Paraná
+# n = 1
+# Horizonte inserido sem necessidade. Deletar.
+tit <- "Levantamento de Reconhecimento Dos Solos do Estado do Paraná"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "Perfil nº82")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento de reconhecimento dos solos do sul do estado de Mato Grosso
+# n = 2
+# Os perfis existem, mas os dados não foram digitados. talvez estejam em outro trabalho. Há mais perfis
+# não digitados nesse trabalho.
+tit <- "Levantamento de reconhecimento dos solos do sul do estado de Mato Grosso"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "04")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "Perfil 07")
+db$Símbolo.Horizonte[idx]
+
+# LEVANTAMENTO DE RECONHECIMENTO DOS SOLOS E AVALIAÇÃO DA APTIDÃO AGRÍCOLA DAS TERRAS DE UMA ÁREA DE 
+# COLONIZAÇÃO NO MUNICÍPIO DE URUCARÁ, ESTADO DO AMAZONAS.
+# n = 1
+# Horizonte insirido sem necessidade. Deletar.
+tit <- "LEVANTAMENTO DE RECONHECIMENTO DOS SOLOS E AVALIAÇÃO DA APTIDÃO AGRÍCOLA DAS TERRAS DE UMA ÁREA DE COLONIZAÇÃO NO MUNICÍPIO DE URUCARÁ, ESTADO DO AMAZONAS."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "PERFIL 6")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento Exploratório - Reconhecimento de Solos da Margem Direita do Rio São Franciso. Estado da Bahia - 
+# Volume I.
+# n = 1
+# Horizonte desnecessário. Deletar.
+tit <- "Levantamento Exploratório - Reconhecimento de Solos da Margem Direita do Rio São Franciso. Estado da Bahia - Volume I."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "174")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DE SERGIPE.
+# n = 2
+# Os dois horizontes foram digitados sem necessidade. Deletar.
+tit <- "LEVANTAMENTO EXPLORATÓRIO - RECONHECIMENTO DE SOLOS DO ESTADO DE SERGIPE."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "PERFIL 21")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "PERFIL 17")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento exploratório - Reconhecimento de solos do Estado do Ceará 
+# n = 2
+# Dois horizontes desnecessários. Deletar.
+tit <- "Levantamento exploratório - Reconhecimento de solos do Estado do Ceará "
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "P71")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "P62")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# LEVANTAMENTO EXPLORATÓRIO DOS SOLOS QUE OCORREM AO LONGO DA RODOVIA MANAUS - PORTO VELHO
+# n = 1
+# Horizonte desnecessário. Deletar.
+tit <- "LEVANTAMENTO EXPLORATÓRIO DOS SOLOS QUE OCORREM AO LONGO DA RODOVIA MANAUS - PORTO VELHO"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "6-EXTRA")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# Levantamento semidetalhado de solos: região da campanha - Folha Palomas, Estado do Rio Grande do Sul
+# n = 1
+# Nenhum dado foi inserido para esse trabalho. Deletar.
+tit <- "Levantamento semidetalhado de solos: região da campanha - Folha Palomas, Estado do Rio Grande do Sul"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# LEVANTAMENTO SEMIDETALHADO DOS SOLOS DA FAZENDA CANCHIM SÃO CARLOS - SP.
+# n = 1
+# Não consegui os dados originais. Talvez exista.
+tit <- "LEVANTAMENTO SEMIDETALHADO DOS SOLOS DA FAZENDA CANCHIM SÃO CARLOS - SP."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "E58")
+db$Símbolo.Horizonte[idx]
+
+# Levantamento Semidetalhado dos Solos de Áreas do Ministério da Agricultura no Distrito Federal.
+# n = 2 
+# Horizontes desnecessários. Deletar.
+tit <- "Levantamento Semidetalhado dos Solos de Áreas do Ministério da Agricultura no Distrito Federal."
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "8")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Número.PA == "Ficha de Campo3")
+db$Símbolo.Horizonte[idx]
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
+
+# PEDOGÊNESE DE ESPODOSSOLOS EM AMBIENTES DA FORMAÇÃO BARREIRAS E DE RESTINGA DO SUL DA BAHIA
+# n = 1
+# Nenhum dado foi inserido para esse trabalho. Deletar.
+tit <- "PEDOGÊNESE DE ESPODOSSOLOS EM AMBIENTES DA FORMAÇÃO BARREIRAS E DE RESTINGA DO SUL DA BAHIA"
+nrow(db[db$Título.do.Trabalho == tit, ])
+length(unique(db$profile_id[db$Título.do.Trabalho == tit]))
+sort(unique(db[db$Título.do.Trabalho == tit, "Número.PA"]))
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+db <- db[-idx, ]
 
 
-i <- agrep("PODZÓLICO VERMELHO-AMARELO Tb Álico A moderado textura argilosa/ muito argilosa fase floresta tropical subperenifólia relevo plano", 
-      db$Classificação.Original, ignore.case = T)
 
-db$Título.do.Trabalho[i]
-
-db$Ataque.sulfúrico...Fe2O3[14301]
-
-
-
-# Manter apenas registros sem 'Código.PA'
-db <- db[is.na(db$Código.PA), ];nrow(db)
-db$Número.PA[which(db$Número.PA == "")] <- NA_character_
-tmp <- 
-  db[, c("Número.PA", "Número.de.Campo", "Localização.descritiva", "Classificação.Original", 
-         "Título.do.Trabalho", "Data.da.Coleta", "UF", "Município")]
-tmp <- unique(tmp)
-str(tmp)
-write.csv(tmp, "tmp.csv")
-
-db[rownames(tmp), "Código.PA"]
-
-# PERFIS ######################################################################################################
-
-# Definir as colunas necessárias
-lat_cols <- colnames(db)[grep("Lat", colnames(db))]
-long_cols <- colnames(db)[grep("Long", colnames(db))]
-pf <- db[, c(
-  "Código.Trabalho", "Localização.descritiva", "Referência.Bibliográfica",
-  "Código.PA", "Número.PA", "Data.da.Coleta", "Título.do.Trabalho", "Ano.de.Publicação", "Tipo.de.Publicação",
-  "Número", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
-  "Classificação.Original", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "Uso.Atual", "Litologia")]
-
-nrow(pf)
+# i <- agrep("PODZÓLICO VERMELHO-AMARELO Tb Álico A moderado textura argilosa/ muito argilosa fase floresta tropical subperenifólia relevo plano", 
+#       db$Classificação.Original, ignore.case = T)
+# 
+# db$Título.do.Trabalho[i]
+# 
+# db$Ataque.sulfúrico...Fe2O3[14301]
+# 
+# 
+# 
+# # Manter apenas registros sem 'Código.PA'
+# db <- db[is.na(db$Código.PA), ];nrow(db)
+# db$Número.PA[which(db$Número.PA == "")] <- NA_character_
+# tmp <- 
+#   db[, c("Número.PA", "Número.de.Campo", "Localização.descritiva", "Classificação.Original", 
+#          "Título.do.Trabalho", "Data.da.Coleta", "UF", "Município")]
+# tmp <- unique(tmp)
+# str(tmp)
+# write.csv(tmp, "tmp.csv")
+# 
+# db[rownames(tmp), "Código.PA"]
+# 
+# # PERFIS ######################################################################################################
+# 
+# # Definir as colunas necessárias
+# lat_cols <- colnames(db)[grep("Lat", colnames(db))]
+# long_cols <- colnames(db)[grep("Long", colnames(db))]
+# pf <- db[, c(
+#   "Código.Trabalho", "Localização.descritiva", "Referência.Bibliográfica",
+#   "Código.PA", "Número.PA", "Data.da.Coleta", "Título.do.Trabalho", "Ano.de.Publicação", "Tipo.de.Publicação",
+#   "Número", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
+#   "Classificação.Original", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "Uso.Atual", "Litologia")]
+# 
+# nrow(pf)
