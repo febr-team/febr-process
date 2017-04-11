@@ -36,7 +36,7 @@ ctb <- data.frame(
   Tipo = ifelse(
     dataset[dataset$column == "subject", "data"] == "Gênese, Morfologia e Classificação dos Solos",
     "PEDOLÓGICO", "EDAFOLÓGICO"),
-  url = "https://docs.google.com/spreadsheets/d/1nwz6yvoomItBnSea26h5sAD-2PCguZyzEH8oFMMFRkA/edit?usp=sharing")
+  url = "https://docs.google.com/spreadsheets/d/1oPacCIchm-cGu-TSfQq8sBxsGC9xZx7urw5FSobS1mU/edit?usp=sharing")
 rownames(ctb) <- NULL
 ctb
 
