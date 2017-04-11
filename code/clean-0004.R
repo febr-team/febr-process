@@ -1,10 +1,8 @@
-# Contribuição 0004
-# Responsável: Carmem Sueze Miranda Masutti
-# Instituição: 
-
 # Preparar ambiente de trabalho
 rm(list = ls())
 source("code/helper.R")
+
+n <- "ctb0004"
 
 # Descarregar dados
 dataset <- as.data.frame(gsheet::gsheet2tbl(
@@ -35,11 +33,13 @@ ctb <- data.frame(
   Instituição = dataset[dataset$column == "organization_name", 2],
   UF = levels(as.factor(db[id_row, "state_id"])),
   Contribuição = summary(as.factor(db[id_row, "state_id"])),
-  Tipo = dataset[dataset$column == "subject", 2],
+  Tipo = ifelse(
+    dataset[dataset$column == "subject", "data"] == "Gênese, Morfologia e Classificação dos Solos",
+    "PEDOLÓGICO", "EDAFOLÓGICO"),
   url = "https://docs.google.com/spreadsheets/d/1nwz6yvoomItBnSea26h5sAD-2PCguZyzEH8oFMMFRkA/edit?usp=sharing")
 rownames(ctb) <- NULL
 ctb
 
 # Salvar arquivo com descrição da contribuição para publicação no website
-write.csv(ctb, "./web/data/ctb0004.csv", fileEncoding = "UTF-8")
+write.csv(ctb, paste("./web/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
 rm(ctb)
