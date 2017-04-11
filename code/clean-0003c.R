@@ -700,6 +700,9 @@ points(db[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
 
 
 
+
+# 
+
 # i <- agrep("PODZÓLICO VERMELHO-AMARELO Tb Álico A moderado textura argilosa/ muito argilosa fase floresta tropical subperenifólia relevo plano", 
 #       db$Classificação.Original, ignore.case = T)
 # 
