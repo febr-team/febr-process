@@ -667,72 +667,106 @@ db[idx2[l], c("x_coord", "y_coord")] <- esalq[k[n], c("longitude", "latitude")]
 # PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 28.
 # Os dados dos perfis foram inseridos nos seguintes trabalhos:
 # - Levantamento de reconhecimento dos solos do Sul do Estado de Mato Grosso.
-# - Levantamento de reconhecimento dos solos do nordeste do Estado do Paraná.
-# Os dados do RADAM não possuem número de campo. Atribui-se os respectivos números dos perfis do levantamento
-# do Mato Grosso. O levantamento dos solos do nordeste do Paraná não está no SISB.
-# Infelizmente não é possível correlacionar os dados.
+# Os dados do RADAM não possuem número de campo. Poucos são os perfis do levantamento do sul do MT sem 
+# coordenadas. Não é possível estabelecer correlações. Restam muitos perfis da base de dados da Esalq no MS 
+# sem aparente equivalência com os dados do SISB. Há apenas 42 perfis no RADAM quando o original informa a
+# existência de 155 perfis, 117 deles do levantamento do sul do MT. Contudo, há apenas 18 perfis do referido
+# levantamento no SISB. Parece que muitos dos dados desse levantamento não foram inseridos no SISB.
 tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 28."
+idx <- which(db$Título.do.Trabalho == tit)
+dim(unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]))
 idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
-unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
-tit2 <- "Levantamento de reconhecimento dos solos do sul do estado de Mato Grosso"
-idx2 <- which(db$Título.do.Trabalho == tit2)
-unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
-db[idx, "Número.de.Campo"] <- stringr::str_split_fixed(db[idx, "Observações"], "perfil n° ", 2)[, 2]
-db[idx, "Número.de.Campo"] <- gsub(".", "", db[idx, "Número.de.Campo"], fixed = TRUE)
-# Procurar coordenadas para o Levantamento de solos do sul do Mato Grosso
-i <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
-db[i, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]
-j <- gsub("Perfil ", "", db$Número.PA[idx2]) %in% unique(db$Número.de.Campo[idx])
-unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")][j, ])
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")])
 k <- which(esalq$Source == "RADAM" & esalq$UF == "MS" & esalq$SourceVolume == 28)
 esalq[k, c("OrgProfID", "longitude" , "latitude", "PubYear")]
+pa <- db[idx, "Número.PA"]
+pb <- esalq[k, "OrgProfID"]
+m <- match(pa, pb)
+db[idx, c("x_coord", "y_coord")] <- esalq[m, c("longitude", "latitude")]
+#
+tit2 <- "Levantamento de reconhecimento dos solos do sul do estado de Mato Grosso"
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")])
+dim(unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord", "y_coord")]))
+# Mato Grosso do Sul
+idx <- which(esalq$UF == "MS")
+unique(esalq[idx, 2:8])
 
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 33.
+# 
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 33."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+# idx <- which(db$Título.do.Trabalho == tit)
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+db[idx, "Número.de.Campo"] <- stringr::str_split_fixed(db[idx, "Observações"], "perfil", Inf)[, 3]
+db[idx, "Número.de.Campo"] <- stringr::str_trim(db[idx, "Número.de.Campo"])
+db[idx, "Número.de.Campo"] <- gsub(".", "", db[idx, "Número.de.Campo"], fixed = TRUE)
+k <- which(esalq$Source == "RADAM" & esalq$SourceVolume == 33)
+esalq[k, c("OrgProfID", "longitude" , "latitude", "PubYear")]
+pa <- db[idx, "Número.PA"]
+pa[grep("-EXTRA", pa)] <- paste("E", pa[grep("-EXTRA", pa)], sep = "")
+pa <- gsub("-EXTRA", "", pa)
+pb <- esalq[k, "OrgProfID"]
+m <- match(pa, pb)
+db[idx, c("x_coord", "y_coord")] <- esalq[m, c("longitude", "latitude")]
+#
+tit2 <- "LEVANTAMENTO DE RECONHECIMENTO DO SOLOS DO ESTADO DO RIO GRANDE DO SUL. Boletim Técnico n°30"
+idx2 <- which(db$Título.do.Trabalho == tit2)
+unique(db[idx2, c("Número.PA", "Número.de.Campo", "x_coord")])
+pa <- db[idx, "Número.de.Campo"]
+pb <- db[idx2, "Número.PA"]
+pb <- gsub(" ", "", pb)
+m <- match(pb, pa)
+db[idx2, c("x_coord", "y_coord")] <- db[idx[m], c("x_coord", "y_coord")]
 
-i <- which(db$UF == "MS" | db$UF == "MT" & is.na(db$x_coord));length(i)
-unique(db[i, c("Número.PA", "Número.de.Campo", "x_coord")])
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 29.
+# Os dados dos perfis foram inseridos eem vários trabalhos realizados em Goiás, Bahia, Minas Gerais e
+# Distrito Federal.
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 29."
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+k <- which(esalq$Source == "RADAM" & esalq$SourceVolume == 29)
+esalq[k, c("OrgProfID", "longitude" , "latitude", "PubYear")]
+pa <- db[idx, "Número.PA"]
+pa[grep("-EXTRA", pa)] <- paste("E", pa[grep("-EXTRA", pa)], sep = "")
+pa <- gsub("-EXTRA", "", pa)
+pb <- esalq[k, "OrgProfID"]
+m <- match(pa, pb)
+db[idx, c("x_coord", "y_coord")] <- esalq[m, c("longitude", "latitude")]
 
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 30. 
+# Também usou dados de vários levantamentos.
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 30. "
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+k <- which(esalq$Source == "RADAM" & esalq$SourceVolume == 30)
+esalq[k, c("OrgProfID", "longitude" , "latitude", "PubYear")]
+pa <- db[idx, "Número.PA"]
+pa[grep(" - EXTRA", pa)] <- paste("E", pa[grep(" - EXTRA", pa)], sep = "")
+pa <- gsub(" - EXTRA", "", pa)
+pb <- esalq[k, "OrgProfID"]
+m <- match(pa, pb)
+db[idx, c("x_coord", "y_coord")] <- esalq[m, c("longitude", "latitude")]
 
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 32. 
+# Também usou dados de vários levantamentos. 
+tit <- "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 32. "
+idx <- which(db$Título.do.Trabalho == tit & db$Código.PA == "unknown")
+unique(db[idx, c("Número.PA", "Número.de.Campo", "x_coord")])
+k <- which(esalq$Source == "RADAM" & esalq$SourceVolume == 32)
+esalq[k, c("OrgProfID", "longitude" , "latitude", "PubYear")]
+pa <- db[idx, "Número.PA"]
+pb <- esalq[k, "OrgProfID"]
+m <- match(pa, pb)
+db[idx, c("x_coord", "y_coord")] <- esalq[m, c("longitude", "latitude")]
+
+# PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 34.
+# Não há dados no trabalho da Esalq.
 sp::plot(states, asp = 1, axes = TRUE)
 points(esalq[, c("longitude", "latitude")], cex = 0.5, col = 1)
 points(db[, c("x_coord", "y_coord")], cex = 0.5, pch = 20, col = 2)
 
+# Parece que o resto do trabalho terá que ser feito manualmente.
 
-
-
-
-
-# 
-
-# i <- agrep("PODZÓLICO VERMELHO-AMARELO Tb Álico A moderado textura argilosa/ muito argilosa fase floresta tropical subperenifólia relevo plano", 
-#       db$Classificação.Original, ignore.case = T)
-# 
-# db$Título.do.Trabalho[i]
-# 
-# db$Ataque.sulfúrico...Fe2O3[14301]
-# 
-# 
-# 
-# # Manter apenas registros sem 'Código.PA'
-# db <- db[is.na(db$Código.PA), ];nrow(db)
-# db$Número.PA[which(db$Número.PA == "")] <- NA_character_
-# tmp <- 
-#   db[, c("Número.PA", "Número.de.Campo", "Localização.descritiva", "Classificação.Original", 
-#          "Título.do.Trabalho", "Data.da.Coleta", "UF", "Município")]
-# tmp <- unique(tmp)
-# str(tmp)
-# write.csv(tmp, "tmp.csv")
-# 
-# db[rownames(tmp), "Código.PA"]
-# 
-# # PERFIS ######################################################################################################
-# 
-# # Definir as colunas necessárias
-# lat_cols <- colnames(db)[grep("Lat", colnames(db))]
-# long_cols <- colnames(db)[grep("Long", colnames(db))]
-# pf <- db[, c(
-#   "Código.Trabalho", "Localização.descritiva", "Referência.Bibliográfica",
-#   "Código.PA", "Número.PA", "Data.da.Coleta", "Título.do.Trabalho", "Ano.de.Publicação", "Tipo.de.Publicação",
-#   "Número", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
-#   "Classificação.Original", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "Uso.Atual", "Litologia")]
-# 
-# nrow(pf)
+# Salvar aquivo
+write.table(db, file = "data/raw/fe0003/embrapa-pos-03.csv", sep = ";", fileEncoding = "UTF-8")
