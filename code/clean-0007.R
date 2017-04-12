@@ -27,17 +27,18 @@ id_row <- unique(idx[, 1])
 # Preparar descrição da contribuição 
 ctb <- data.frame(
   Nome = paste(
-    stringr::str_split_fixed(dataset[dataset$column == "author_first_name", "data"], ";", 2)[1],
-    stringr::str_split_fixed(dataset[dataset$column == "author_last_name", "data"], ";", 2)[1]
+    stringr::str_split_fixed(dataset[dataset$item == "author_first_name", "data"], ";", 2)[1],
+    stringr::str_split_fixed(dataset[dataset$item == "author_last_name", "data"], ";", 2)[1]
   ),
-  Instituição = dataset[dataset$column == "organization_name", 2],
+  Instituição = dataset[dataset$item == "organization_name", 2],
   UF = levels(as.factor(db[id_row, "state_id"])),
   Contribuição = summary(as.factor(db[id_row, "state_id"])),
   Tipo = ifelse(
-    dataset[dataset$column == "subject", "data"] == "Gênese, Morfologia e Classificação dos Solos",
+    dataset[dataset$item == "subject", "data"] == "Gênese, Morfologia e Classificação dos Solos",
     "PEDOLÓGICO", "EDAFOLÓGICO"),
   url = "https://docs.google.com/spreadsheets/d/1H-B8ReAc9BepqfQFKnGItXH_04DIlgJuk8ACFnvgZEA/edit?usp=sharing")
 rownames(ctb) <- NULL
+ctb
 
 # Salvar arquivo com descrição da contribuição para publicação no website
 write.csv(ctb, paste("./web/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")

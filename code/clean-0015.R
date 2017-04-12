@@ -38,6 +38,7 @@ ctb <- data.frame(
     "PEDOLÓGICO", "EDAFOLÓGICO"),
   url = "https://docs.google.com/spreadsheets/d/1dRDH6khT78PXj31-a9EvTxq3Al1T3eWyckujQeP4BPM/edit?usp=sharing")
 rownames(ctb) <- NULL
+ctb
 
 # Salvar arquivo com descrição da contribuição para publicação no website
 write.csv(ctb, paste("./web/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
