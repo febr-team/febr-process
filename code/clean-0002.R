@@ -1,83 +1,46 @@
-# Contribuição 0002
-# Responsável: Elias Mendes Costa
-# Instituição: Universidade Federal Rural do Rio de Janeiro
-
 # Preparar ambiente de trabalho
 rm(list = ls())
 source("code/helper.R")
 
-# Carregar dados
-db <- read.csv(
-  "data/raw/fe0002/Costa2015.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+n <- "ctb0002"
+
+# Descarregar dados
+dataset <- as.data.frame(gsheet::gsheet2tbl(
+  "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/edit#gid=1215698767"
+))
+observations <- gsheet::gsheet2tbl(
+  "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/edit#gid=599711036"
+)
+layer <- gsheet::gsheet2tbl(
+  "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/edit#gid=1143737782"
+)
+
+# Agregar dados das observações e camadas
+db <- merge(observations, layer, by = "observation_id")
 
 # Identificar linhas e colunas contendo dados de ferro
-id_col <- colnames(db)[grep("Fe", colnames(db))]
-id_col <- id_col[-2]
+id_col <- colnames(db)[grep("fe", colnames(db))]
 idx <- which(!is.na(db[, id_col]), arr.ind = TRUE)
-id_col <- id_col[unique(idx[, 2])]
-id_row <- unique(idx[, 1])
+if (is.null(dim(idx))) {
+  id_row <- idx
+} else {
+  id_col <- id_col[unique(idx[, 2])]
+  id_row <- unique(idx[, 1])
+}
 
-# Salvar arquivo com descrição da contribuição para publicação no website 
+# Preparar descrição da contribuição 
 ctb <- data.frame(
-  Nome = "Elias Mendes Costa",
-  Instituição = "Universidade Federal Rural do Rio de Janeiro",
-  UF = "RJ",
-  Contribuição = sum(!is.na(db[id_row, id_col])),
-  Tipo = "PEDOLÓGICO",
-  url = "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/edit?usp=sharing")
+  Nome = stringr::str_split_fixed(dataset[dataset$item == "author_name", "data"], ";", n = Inf)[1],
+  Instituição = dataset[dataset$item == "organization_name", 2],
+  UF = levels(as.factor(db[id_row, "state_id"])),
+  Contribuição = summary(as.factor(db[id_row, "state_id"])),
+  Tipo = ifelse(
+    dataset[dataset$item == "subject", "data"] == "Gênese, Morfologia e Classificação dos Solos",
+    "PEDOLÓGICO", "EDAFOLÓGICO"),
+  url = "https://docs.google.com/spreadsheets/d/1FQpmLSeVsbVDeFEwBzLQO1j6_m_G5PZ58DRPr32fhAc/edit?usp=sharing")
 rownames(ctb) <- NULL
 ctb
-write.csv(ctb, "./web/data/ctb0002.csv", fileEncoding = "UTF-8")
+
+# Salvar arquivo com descrição da contribuição para publicação no website
+write.csv(ctb, paste("./web/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
 rm(ctb)
-
-# PERFIS ######################################################################################################
-pf <- db[, c(
-  "Código.PA", "Data.da.Coleta", "Datum", "Northing", "Easting", "UF", "Município", "Classe.de.Solos.Nível.3",
-  "X1ª.Ocorrência", "Uso.Atual", "Litologia")]
-pf <- pf[!duplicated(pf$Código.PA), ]
-
-# PERFIS: Data de observação ----
-pf$Data.da.Coleta <- gsub("/", "-", pf$Data.da.Coleta)
-
-# PERFIS: Classificação do solo ----
-pf$classe <- paste(pf$Classe.de.Solos.Nível.3, " ", pf$X1ª.Ocorrência, sep = "")
-pf$sibcs <- sapply(pf$classe, sibcsSymbol)
-pf[, c("classe", "sibcs")]
-
-# PERFIS: Uso da terra ----
-# Apenas dois usos da terra foram identificados.
-id <- grep("pastagem", pf$Uso.Atual, ignore.case = TRUE)
-pf$Uso.Atual[id] <- "CRIAÇÃO ANIMAL"
-pf$Uso.Atual[6] <- "CRIAÇÃO ANIMAL"
-pf$Uso.Atual[10] <- "PROTEÇÃO DA NATUREZA"
-
-# PERFIS: Litologia ----
-id <- grep("aluvionar", pf$Litologia)
-pf$Litologia[id] <- "Sedimento aluvial"
-
-# Salvar arquivo temporário com dados para planilha final
-write.csv(pf, "data/raw/fe0002/tmp.csv", fileEncoding = "UTF-8")
-rm(pf)
-
-# HORIZONTE ###################################################################################################
-hz <- db[, c(
-  "Código.PA", "Código.Horizonte", "Símbolo.Horizonte", "Profundidade.Superior", "Profundidade.Inferior", 
-  id_col)]
-str(hz)
-
-# Salvar arquivo temporário com dados para planilha final
-write.csv(hz, "data/raw/fe0002/tmp.csv", fileEncoding = "UTF-8")
-
-
-
-# HORIZONTE ###################################################################################################
-hz <- db[id_row, c(
-  "Código.PA", "Código.Horizonte", "Símbolo.Horizonte", "Profundidade.Superior", "Profundidade.Inferior", 
-  id_col)]
-str(hz)
-
-# Salvar arquivo temporário com dados para planilha final
-write.csv(hz, "data/raw/fe0002/tmp.csv", fileEncoding = "UTF-8")
-
-# Remover arquivo temporário
-system("rm data/raw/fe0002/tmp.csv")

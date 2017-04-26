@@ -21,15 +21,16 @@ db <- merge(observations, layer, by = "observation_id")
 # Identificar linhas e colunas contendo dados de ferro
 id_col <- colnames(db)[grep("fe", colnames(db))]
 idx <- which(!is.na(db[, id_col]), arr.ind = TRUE)
-id_col <- id_col[unique(idx[, 2])]
-id_row <- unique(idx[, 1])
+if (is.null(dim(idx))) {
+  id_row <- idx
+} else {
+  id_col <- id_col[unique(idx[, 2])]
+  id_row <- unique(idx[, 1])
+}
 
 # Preparar descrição da contribuição 
 ctb <- data.frame(
-  Nome = paste(
-    stringr::str_split_fixed(dataset[dataset$item == "author_first_name", "data"], ";", 2)[1],
-    stringr::str_split_fixed(dataset[dataset$item == "author_last_name", "data"], ";", 2)[1]
-  ),
+  Nome = stringr::str_split_fixed(dataset[dataset$item == "author_name", "data"], ";", n = Inf)[1],
   Instituição = dataset[dataset$item == "organization_name", 2],
   UF = levels(as.factor(db[id_row, "state_id"])),
   Contribuição = summary(as.factor(db[id_row, "state_id"])),
@@ -38,6 +39,7 @@ ctb <- data.frame(
     "PEDOLÓGICO", "EDAFOLÓGICO"),
   url = "https://docs.google.com/spreadsheets/d/1oPacCIchm-cGu-TSfQq8sBxsGC9xZx7urw5FSobS1mU/edit?usp=sharing")
 rownames(ctb) <- NULL
+ctb
 
 # Salvar arquivo com descrição da contribuição para publicação no website
 write.csv(ctb, paste("./web/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
