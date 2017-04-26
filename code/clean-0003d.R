@@ -117,6 +117,13 @@ cols_layer <- c(
 # Dividir dados por trabalho
 db <- split(db, as.factor(db$Código.Trabalho))
 
+# Arquivos de dados extra
+extra_files <- c("sisb-fisicas.csv", "sisb-morfologicas.csv")
+extra_files <- paste("data/raw/fe0003/", extra_files, sep = "")
+extra_files <- lapply(1:length(extra_files), function (i) {
+  read.csv(extra_files[i], head = TRUE, sep = ",", stringsAsFactors = FALSE, encoding = "UTF-8")
+})
+
 # Salvar trabalhos em arquivos individuais por UF
 # UF exportadas: RS
 file_name <- names(db)
@@ -130,15 +137,15 @@ lapply(1:length(db), function (i) {
     # dataset
     dataset <- unique(db[[i]][, cols_dataset])
     dataset <- cbind(
-      dataset_id = paste("fe", dataset$Código.Trabalho, sep = ""),
+      dataset_id = paste("fe0", dataset$Código.Trabalho, sep = ""),
       dataset_title = 
-        paste("Conjunto de dados do ", dataset$Nível.do.Levantamento.Pedológico, "'",
+        paste("Conjunto de dados do ", dataset$Nível.do.Levantamento.Pedológico, " '",
               dataset$Título.do.Trabalho, "'", sep = ""),
       dataset_description = 
         paste("Conjunto de dados públicos do solo originalmente obtidos do Sistema de Informação de Solos ", 
               "Brasileiros (SISB), ",
               "construído e mantido pela Embrapa Solos (Rio de Janeiro) e Embrapa Informática Agropecuária ",
-              "(Campinas), referente ao ", dataset$Nível.do.Levantamento.Pedológico, "'", 
+              "(Campinas), referente ao ", dataset$Nível.do.Levantamento.Pedológico, " '", 
               dataset$Título.do.Trabalho, "'. ", "Dados de localização espacial de observações do solo sem ",
               "coordenadas espaciais foram completados usando dados produzidos por Cooper et al. (2005) e ",
               "publicados no artigo 'A national soil profile database for Brazil available to international ",
@@ -165,14 +172,15 @@ lapply(1:length(db), function (i) {
       publication_date = "xx-xx-2017",
       dataset_version = "2.0",
       dataset_license = "CC BY 4.0",
-      organization_name = "",
+      organization_name = "Embrapa Informática Agropecuária / Embrapa Solos; INSERIR ORGANIZAÇÃO AUTORA",
       organization_url = "",
       organization_country = "Brasil",
       organization_city = "",
       organization_postal_code = "",
       organization_street_name = "",
       organization_street_number = "",
-      author_name = gsub(",", ";", dataset$Autor),
+      author_name = 
+        paste("Sistema de Informação de Solos Brasileiros; ", gsub(",", ";", dataset$Autor), sep = ""),
       author_email = "",
       contributor_name = "Alessandro Samuel-Rosa; Diego Gris; Nícolas Augusto Rosin",
       contributor_email	= 
@@ -206,17 +214,50 @@ lapply(1:length(db), function (i) {
       sample_area = as.character(1),
       observation[, 6:ncol(observation)]
     )
+    colnames(observation) <- gsub("...", ".", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("..", ".", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub(".", "_", colnames(observation), fixed = TRUE)
+    colnames(observation) <- tolower(colnames(observation))
+    colnames(observation) <- gsub("_$", "", colnames(observation))
+    colnames(observation) <- stringr::str_trim(colnames(observation))
+    colnames(observation) <- gsub("_de_", "_", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("_da_", "_", colnames(observation), fixed = TRUE)
+    colnames(observation) <- 
+      gsub("responsável_is_pela_descrição", "autor_descricao", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("grupamento_", "", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("ª", "", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("_das_amostras$", "", colnames(observation))
+    colnames(observation) <- gsub("_m$", "", colnames(observation))
+    colnames(observation) <- gsub("_por_", "_", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("^ocorrência_", "ocorre_", colnames(observation))
+    colnames(observation) <- gsub("^presença_", "ocorre_", colnames(observation))
+    colnames(observation) <- gsub("_contato_lico_", "_contato_litico_", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("^frequência_", "freq_", colnames(observation))
+    colnames(observation) <- gsub("horizonte_diagnóstico_", "hz_diag_", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("^profundidade_", "prof_", colnames(observation))
+    colnames(observation) <- iconv(colnames(observation), from = "UTF-8", to = 'ASCII//TRANSLIT')
+    colnames(observation) <- 
+      gsub("informacoes_complementares", "extra_info", colnames(observation), fixed = TRUE)
     write.table(
       observation, 
       file = paste("data/raw/", file_name[i], "-", uf, "-observation.csv", sep = ""), 
       sep = "\t", fileEncoding = "UTF-8", row.names = FALSE)
     
     # layer
-    layer <- db[[i]][, cols_layer]
+    drop_cols <- 
+      c("Data.da.Coleta", "land_use.y", "litology.y", "Link.para.Descrição.em.PDF", "Sistema.de.Coordenada",
+        "Latitude.Graus", "Latitude.Minutos", "Latitude.Segundos", "Latitude.Hemisfério", "Longitude.Graus",
+        "Longitude.Minutos", "Longitude.Segundos", "Longitude.Hemisfério", "Northing", "Easting", 
+        "Informações.Complementares.1", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "X2ª.Ocorrência", 
+        "X3ª.Ocorrência", "X4ª.Ocorrência", "Classe.de.Solos.Nível.2", "Classe.de.Solos.Nível.1", 
+        "Descrição.Original", "X", "litology", "profile_id", cols_observation, cols_layer, cols_dataset)
+    drop_cols_idx <- unique(match(drop_cols, colnames(db[[i]])))
+    layer <- cbind(db[[i]][, cols_layer], db[[i]][, -drop_cols_idx])
     layer <- layer[with(layer, order(Código.PA, Código.Horizonte)), ]
     colnames(layer) <- 
       c("observation_id", "layer_name", "Código.Horizonte", "upper_depth", "lower_depth",
-        "fe_sulfurico_xxx", "fe_ditionito_xxx", "fe_oxalato_xxx", "fe_pirofosfato_xxx", "fe_xxx_xxx")
+        "fe_sulfurico_xxx", "fe_ditionito_xxx", "fe_oxalato_xxx", "fe_pirofosfato_xxx", "fe_xxx_xxx", 
+        colnames(layer)[-c(1:10)])
     layer <- cbind(
       observation_id = layer$observation_id,
       layer_number = "",
@@ -224,6 +265,60 @@ lapply(1:length(db), function (i) {
       sample_code = layer$Código.Horizonte,
       layer[, 4:ncol(layer)]
       )
+    layer <- cbind(
+      layer, 
+      extra_files[[1]][
+        match(layer$sample_code, extra_files[[1]]$Código.Horizonte), 
+        -na.omit(match(drop_cols, colnames(extra_files[[1]])))
+        ],
+      extra_files[[2]][
+        match(layer$sample_code, extra_files[[2]]$Código.Horizonte), 
+        -na.omit(match(drop_cols[-match("Descrição.Original", drop_cols)], colnames(extra_files[[2]])))
+        ]
+      )
+    colnames(layer) <- tolower(colnames(layer))
+    colnames(layer) <- gsub("...", ".", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("..", ".", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub(".", "_", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("_$", "", colnames(layer))
+    colnames(layer) <- stringr::str_trim(colnames(layer))
+    colnames(layer) <- gsub("_ou$", "", colnames(layer))
+    colnames(layer) <- gsub("^cor_da_amostra_", "cor_", colnames(layer))
+    colnames(layer) <- gsub("^grau_de_consistência_", "consistencia_", colnames(layer))
+    colnames(layer) <- gsub("^molhada_p", "consistencia_molhada_p", colnames(layer))
+    colnames(layer) <- gsub("_grau_de_desenvolvimento$", "_desenvolvimento", colnames(layer))
+    colnames(layer) <- gsub("^grau_de_desenvolvimento_", "estrutura_desenvolvimento_", colnames(layer))
+    colnames(layer) <- gsub("ª", "", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("^composição_granulométrica_da_terra_fina_", "terra_fina_", colnames(layer))
+    colnames(layer) <- gsub("^frações_da_amostra_total_", "total_", colnames(layer))
+    colnames(layer) <- gsub("informações", "info", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("^microelementos_", "micro_", colnames(layer))
+    colnames(layer) <- gsub("cálcio", "ca", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("magnésio", "mg", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("potássio", "k", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("sódio", "na", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("_hidrogênio_", "_", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("_alumínio_trocável_", "_", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("fósforo_assimilável_", "p_assim_", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("carbono_orgânico", "c_org", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("nitrogênio_total", "n_total", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("alumínio", "al", colnames(layer), fixed = TRUE)
+    colnames(layer) <- 
+      gsub("complexo_sortivo_saturação_por_al_100_al3_s_al3", "sat_al", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("complexo_sortivo_valor_t_s_h_al3", "ctc", colnames(layer), fixed = TRUE)
+    colnames(layer) <-
+      gsub("complexo_sortivo_valor_v_delta_saturação_por_bases_100_s_t", "sat_bases", colnames(layer), 
+           fixed = TRUE)
+    colnames(layer) <- 
+      gsub("complexo_sortivo_valor_s_ca2_mg2_k_na", "soma_bases", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("complexo_sortivo_", "trocavel_", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("ataque_sulfúrico_", "sulfurico_", colnames(layer), fixed = TRUE)
+    colnames(layer) <- gsub("^cdb_", "ditionito_", colnames(layer))
+    colnames(layer) <- gsub("^oxalato_de_amônio_", "oxalato_", colnames(layer))
+    colnames(layer) <- gsub("^pirofosfato_de_na_", "pirofosfato_", colnames(layer))
+    colnames(layer) <- iconv(colnames(layer), from = "UTF-8", to = 'ASCII//TRANSLIT')
+    colnames(layer) <- gsub("^tamanho_", "estrutura_tamanho_", colnames(layer))
+    colnames(layer) <- gsub("^forma_", "estrutura_forma_", colnames(layer))
     write.table(
       layer, 
       file = paste("data/raw/", file_name[i], "-", uf, "-layer.csv", sep = ""), 
@@ -250,3 +345,5 @@ write.table(
   tmp, file = paste("data/raw/esalq-", uf, ".csv", sep = ""), sep = "\t", fileEncoding = "UTF-8", 
   row.names = FALSE)
 
+rm(list = ls())
+gc()
