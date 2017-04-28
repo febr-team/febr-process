@@ -1,3 +1,48 @@
+# Calcular contribuições e gerar metadados para website ####
+createSiteMetadata <-
+  function (n, dataset, observations, layer, sharing) {
+    
+    # Descarregar dados
+    dataset <- as.data.frame(gsheet::gsheet2tbl(dataset))
+    observations <- gsheet::gsheet2tbl(observations)
+    layer <- gsheet::gsheet2tbl(layer)
+    
+    # Agregar dados das observações e camadas
+    db <- merge(observations, layer, by = "observation_id")
+    
+    # Identificar linhas e colunas contendo dados de ferro
+    # Gerar metadados apenas se realmente houver dados de ferro
+    id_col <- colnames(db)[grep("^fe_", colnames(db))]
+    if (length(id_col) > 0) {
+      idx <- which(!is.na(db[, id_col]), arr.ind = TRUE)
+      if (is.null(dim(idx))) {
+        id_row <- idx
+      } else {
+        id_col <- id_col[unique(idx[, 2])]
+        id_row <- unique(idx[, 1])
+      }
+      
+      # Preparar descrição da contribuição 
+      ctb <- data.frame(
+        Nome = stringr::str_split_fixed(dataset[dataset$item == "author_name", "data"], ";", n = Inf)[1],
+        Instituição = 
+          stringr::str_split_fixed(dataset[dataset$item == "organization_name", 2], ";", n = Inf)[1],
+        UF = levels(as.factor(db[id_row, "state_id"])),
+        Contribuição = summary(as.factor(db[id_row, "state_id"])),
+        Tipo = ifelse(
+          dataset[dataset$item == "subject", "data"] == "Gênese, Morfologia e Classificação dos Solos",
+          "PEDOLÓGICO", "EDAFOLÓGICO"),
+        url = sharing)
+      rownames(ctb) <- NULL
+      print(ctb)
+      
+      # Salvar arquivo com descrição da contribuição para publicação no website
+      write.csv(ctb, paste("./web/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
+    } else {
+      cat("Não há dados de ferro")
+    }
+  }
+
 # Fazer busca na Internet usando https://www.google.com.br/maps ####
 googlemaps <-
   function (x) {
