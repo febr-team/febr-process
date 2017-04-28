@@ -137,15 +137,15 @@ lapply(1:length(db), function (i) {
     # dataset
     dataset <- unique(db[[i]][, cols_dataset])
     dataset <- cbind(
-      dataset_id = paste("fe0", dataset$Código.Trabalho, sep = ""),
+      dataset_id = paste("ctb0", dataset$Código.Trabalho, sep = ""),
       dataset_title = 
-        paste("Conjunto de dados do ", dataset$Nível.do.Levantamento.Pedológico, " '",
+        paste("Conjunto de dados do ", tolower(dataset$Nível.do.Levantamento.Pedológico), " '",
               dataset$Título.do.Trabalho, "'", sep = ""),
       dataset_description = 
         paste("Conjunto de dados públicos do solo originalmente obtidos do Sistema de Informação de Solos ", 
               "Brasileiros (SISB), ",
               "construído e mantido pela Embrapa Solos (Rio de Janeiro) e Embrapa Informática Agropecuária ",
-              "(Campinas), referente ao ", dataset$Nível.do.Levantamento.Pedológico, " '", 
+              "(Campinas), referente ao ", tolower(dataset$Nível.do.Levantamento.Pedológico), " '", 
               dataset$Título.do.Trabalho, "'. ", "Dados de localização espacial de observações do solo sem ",
               "coordenadas espaciais foram completados usando dados produzidos por Cooper et al. (2005) e ",
               "publicados no artigo 'A national soil profile database for Brazil available to international ",
@@ -172,7 +172,8 @@ lapply(1:length(db), function (i) {
       publication_date = "xx-xx-2017",
       dataset_version = "2.0",
       dataset_license = "CC BY 4.0",
-      organization_name = "Embrapa Informática Agropecuária / Embrapa Solos; INSERIR ORGANIZAÇÃO AUTORA",
+      # organization_name = "Embrapa Informática Agropecuária / Embrapa Solos; INSERIR ORGANIZAÇÃO AUTORA",
+      organization_name = "",
       organization_url = "",
       organization_country = "Brasil",
       organization_city = "",
@@ -180,7 +181,9 @@ lapply(1:length(db), function (i) {
       organization_street_name = "",
       organization_street_number = "",
       author_name = 
-        paste("Sistema de Informação de Solos Brasileiros; ", gsub(",", ";", dataset$Autor), sep = ""),
+        paste(
+          # "Sistema de Informação de Solos Brasileiros; ", 
+          gsub(",", ";", dataset$Autor), sep = ""),
       author_email = "",
       contributor_name = "Alessandro Samuel-Rosa; Diego Gris; Nícolas Augusto Rosin",
       contributor_email	= 
