@@ -25,8 +25,9 @@ createSiteMetadata <-
       # Preparar descrição da contribuição 
       ctb <- data.frame(
         Nome = stringr::str_split_fixed(dataset[dataset$item == "author_name", "data"], ";", n = Inf)[1],
-        Instituição = 
+        Instituição =
           stringr::str_split_fixed(dataset[dataset$item == "organization_name", 2], ";", n = Inf)[1],
+        Título = dataset[dataset$item == "dataset_title", 2],
         UF = levels(as.factor(db[id_row, "state_id"])),
         Contribuição = summary(as.factor(db[id_row, "state_id"])),
         Tipo = ifelse(
