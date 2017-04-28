@@ -54,6 +54,7 @@ db$UF[na_uf] <- "AM"
 ctb <- data.frame(
   Nome = "Sistema de Informação de Solos Brasileiros",
   Instituição = "Embrapa Informática Agropecuária / Embrapa Solos",
+  Título = "Sistema de Informação de Solos Brasileiros",
   UF = levels(as.factor(db$UF)),
   Contribuição = summary(as.factor(db$UF)),
   Tipo = "PEDOLÓGICO",
