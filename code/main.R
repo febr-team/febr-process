@@ -250,3 +250,16 @@ createSiteMetadata(
   sharing = 
     "https://drive.google.com/drive/folders/0B7xsLbrOA23oRnRvRmlrMlRyQ1E?usp=sharing"
 )
+
+# ctb0770 ####
+createSiteMetadata(
+  n = "ctb0770",
+  dataset = 
+    "https://docs.google.com/spreadsheets/d/13wEFauXRsXBJD0rI8gvHdMxt7iMYA4K8x2LMLQnwRXU/edit#gid=2049891686",
+  observations = 
+    "https://docs.google.com/spreadsheets/d/1OzXAgcC4h-mIGe2B358qVAu33d8vO536JHT8aMVNq8Y/edit#gid=1809478575",
+  layer = 
+    "https://docs.google.com/spreadsheets/d/1wtIbPo0hPV_EZ5mZwnUoF38m1quVtTF8ebqMgREJ_NA/edit#gid=352534073",
+  sharing = 
+    "https://drive.google.com/open?id=13wEFauXRsXBJD0rI8gvHdMxt7iMYA4K8x2LMLQnwRXU"
+)
