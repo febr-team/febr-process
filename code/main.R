@@ -199,6 +199,19 @@ createSiteMetadata(
     "https://docs.google.com/spreadsheets/d/1yGGaV9hsUk-W_29XZs-Fp5OsxpuT1BndrSS3qUO3894/edit?usp=sharing"
 )
 
+# ctb0019 ####
+createSiteMetadata(
+  n = "ctb0019",
+  dataset =
+    "https://docs.google.com/spreadsheets/d/1LmHfwnnfHQoDd6EQTsPQ2KMQHo4Bcl5buYJc3xbtQPI/edit#gid=1085102806",
+  observations =
+    "https://docs.google.com/spreadsheets/d/1LmHfwnnfHQoDd6EQTsPQ2KMQHo4Bcl5buYJc3xbtQPI/edit#gid=133250549",
+  layer =
+    "https://docs.google.com/spreadsheets/d/1LmHfwnnfHQoDd6EQTsPQ2KMQHo4Bcl5buYJc3xbtQPI/edit#gid=72748886",
+  sharing = 
+    "https://docs.google.com/spreadsheets/d/1LmHfwnnfHQoDd6EQTsPQ2KMQHo4Bcl5buYJc3xbtQPI/edit?usp=sharing"
+)
+
 # ctb0022 ####
 createSiteMetadata(
   n = "ctb0022",
