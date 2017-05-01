@@ -185,9 +185,9 @@ lapply(1:length(db), function (i) {
           # "Sistema de Informação de Solos Brasileiros; ", 
           gsub(",", ";", dataset$Autor), sep = ""),
       author_email = "",
-      contributor_name = "Alessandro Samuel-Rosa; Diego Gris; Nícolas Augusto Rosin",
+      contributor_name = "Alessandro Samuel-Rosa",
       contributor_email	= 
-        "alessandrosamuelrosa@gmail.com; diegojgris@gmail.com; nicolasaugustorosin@gmail.com",
+        "alessandrosamuelrosa@gmail.com",
       contributor_organization = "Universidade Federal de Santa Maria (UFSM)",
       dataset_reference_1 = dataset$Referência.Bibliográfica,
       dataset_reference_2 = "https://www.bdsolos.cnptia.embrapa.br/consulta_publica.html",
