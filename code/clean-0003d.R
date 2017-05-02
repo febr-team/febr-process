@@ -166,7 +166,9 @@ lapply(1:length(db), function (i) {
               "como um todo. ",
               "Nenhum item técnico-científico do SISB e seu respectivo banco de dados que seja fruto da ",
               "atividade intelectual, criativa, inovadora e inédita dos projetos conduzidos pela Embrapa ",
-              "foi ou é usado para organizar estruturalmente a presente versão do conjunto de dados.",
+              "foi ou é usado para organizar estruturalmente a presente versão do conjunto de dados. ",
+              "O emprego deste conjunto de dados para finalidades profissionais e/ou comerciais deve ser ",
+              "precedido pelo contato com a Embrapa.",
               sep = ""
               ),
       publication_date = "xx-xx-2017",
