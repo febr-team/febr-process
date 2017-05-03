@@ -1,14 +1,22 @@
 # Calcular contribuições e gerar metadados para website ####
 createSiteMetadata <-
-  function (n, dataset, observations, layer, sharing) {
+  function (n, dataset, observation, layer, sharing) {
     
     # Descarregar dados
-    dataset <- as.data.frame(gsheet::gsheet2tbl(dataset))
-    observations <- gsheet::gsheet2tbl(observations)
-    layer <- gsheet::gsheet2tbl(layer)
+    # dataset <- as.data.frame(gsheet::gsheet2tbl(dataset))
+    # observation <- gsheet::gsheet2tbl(observation)
+    # layer <- gsheet::gsheet2tbl(layer)
+    
+    dataset <- read.csv(
+      text = gsheet::gsheet2text(dataset, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
+    observation <- read.csv(
+      text = gsheet::gsheet2text(observation, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
+    layer <- read.csv(
+      text = gsheet::gsheet2text(layer, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
+    
     
     # Agregar dados das observações e camadas
-    db <- merge(observations, layer, by = "observation_id")
+    db <- merge(observation, layer, by = "observation_id")
     
     # Identificar linhas e colunas contendo dados de ferro
     # Gerar metadados apenas se realmente houver dados de ferro
