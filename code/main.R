@@ -8,13 +8,13 @@ source("code/helper.R")
 createSiteMetadata(
   n = "ctb0001",
   dataset =
-    "https://docs.google.com/spreadsheets/d/1FQpmLSeVsbVDeFEwBzLQO1j6_m_G5PZ58DRPr32fhAc/edit#gid=1085102806",
+    "https://docs.google.com/spreadsheets/d/1-N1Dzc70Mv3PXO8dQgFLdq_RYMHU9uJLh3GkYFBVU2w/pub?output=csv",
   observations =
-    "https://docs.google.com/spreadsheets/d/1FQpmLSeVsbVDeFEwBzLQO1j6_m_G5PZ58DRPr32fhAc/edit#gid=133250549",
+    "https://docs.google.com/spreadsheets/d/1FQpmLSeVsbVDeFEwBzLQO1j6_m_G5PZ58DRPr32fhAc/pub?output=csv",
   layer =
-    "https://docs.google.com/spreadsheets/d/1FQpmLSeVsbVDeFEwBzLQO1j6_m_G5PZ58DRPr32fhAc/edit#gid=72748886",
+    "https://docs.google.com/spreadsheets/d/1ewJgirY3h4c5X5DApGGfkb1z8XALKoBiSh8vKd5JZhA/pub?output=csv",
   sharing = 
-    "https://docs.google.com/spreadsheets/d/1FQpmLSeVsbVDeFEwBzLQO1j6_m_G5PZ58DRPr32fhAc/edit?usp=sharing"
+    "https://drive.google.com/open?id=0B7xsLbrOA23oNExvVGJhVUgtcDg"
 )
 
 # ctb0002 ####
@@ -229,13 +229,13 @@ createSiteMetadata(
 createSiteMetadata(
   n = "ctb0643",
   dataset =
-    "https://docs.google.com/spreadsheets/d/1qW7GUKs9WuGNMsBAzskaw1mxtGgOrbc04jcGiYv-xSU/edit#gid=1654671199",
+    "https://docs.google.com/spreadsheets/d/1qW7GUKs9WuGNMsBAzskaw1mxtGgOrbc04jcGiYv-xSU/pub?output=csv",
   observations =
-    "https://docs.google.com/spreadsheets/d/1fqsX4p8di42xCpRVuVRtQcCIjhCO6emZN2OojDpaKV0/edit#gid=423050149",
+    "https://docs.google.com/spreadsheets/d/1fqsX4p8di42xCpRVuVRtQcCIjhCO6emZN2OojDpaKV0/pub?output=csv",
   layer =
-    "https://docs.google.com/spreadsheets/d/1jO9tarQhP4TKHuR5pBeDXTm77NFYKbtjsuHU-jJ1jtc/edit#gid=756782505",
+    "https://docs.google.com/spreadsheets/d/1jO9tarQhP4TKHuR5pBeDXTm77NFYKbtjsuHU-jJ1jtc/pub?output=csv",
   sharing = 
-    "https://drive.google.com/drive/folders/0B7xsLbrOA23oYmxNd2NaWkFGNUk?usp=sharing"
+    "https://drive.google.com/open?id=0B7xsLbrOA23oYmxNd2NaWkFGNUk"
 )
 
 # ctb0672 ####
