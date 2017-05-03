@@ -21,13 +21,13 @@ createSiteMetadata(
 createSiteMetadata(
   n = "ctb0002",
   dataset =
-    "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/edit#gid=1215698767",
+    "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/pub?output=csv",
   observations =
-    "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/edit#gid=599711036",
+    "https://docs.google.com/spreadsheets/d/1d5CQUCUWMcTcXWrnkInYfIYB9VR3dWTGekST3MI8xKQ/pub?output=csv",
   layer =
-    "https://docs.google.com/spreadsheets/d/1TSt1bM_JWo15sGkPWgoUvHJMCMjn2y_9LuDQo5M0MNE/edit#gid=1143737782",
+    "https://docs.google.com/spreadsheets/d/1NpeWV8eyj78eNFXlT5_BujGMCT3-ns0CEDeWuGkrMPc/pub?output=csv",
   sharing =
-    "https://docs.google.com/spreadsheets/d/1FQpmLSeVsbVDeFEwBzLQO1j6_m_G5PZ58DRPr32fhAc/edit?usp=sharing"
+    "https://drive.google.com/open?id=0B7xsLbrOA23oRjJiQzVpVkh2TWs"
 )
 
 # ctb0004 ####
@@ -47,13 +47,13 @@ createSiteMetadata(
 createSiteMetadata(
   n = "ctb0005",
   dataset =
-    "https://docs.google.com/spreadsheets/d/1oPacCIchm-cGu-TSfQq8sBxsGC9xZx7urw5FSobS1mU/edit#gid=1085102806",
+    "https://docs.google.com/spreadsheets/d/1oPacCIchm-cGu-TSfQq8sBxsGC9xZx7urw5FSobS1mU/pub?output=csv",
   observations =
-    "https://docs.google.com/spreadsheets/d/1oPacCIchm-cGu-TSfQq8sBxsGC9xZx7urw5FSobS1mU/edit#gid=133250549",
+    "https://docs.google.com/spreadsheets/d/1Og0nZ00GYX3GofM7d3pjNVnU-TaAspwx_Jc5CUMK1JM/pub?output=csv",
   layer =
-    "https://docs.google.com/spreadsheets/d/1oPacCIchm-cGu-TSfQq8sBxsGC9xZx7urw5FSobS1mU/edit#gid=72748886",
+    "https://docs.google.com/spreadsheets/d/1I6rKxsjWj4OWzJAQLIq8_HSoDGsm8wgWvsSZL0ddFA4/pub?output=csv",
   sharing = 
-    "https://docs.google.com/spreadsheets/d/1oPacCIchm-cGu-TSfQq8sBxsGC9xZx7urw5FSobS1mU/edit?usp=sharing"
+    "https://drive.google.com/open?id=0B7xsLbrOA23oWkF3cFZBb3FodVk"
 )
 
 ctb0006 ####
@@ -73,13 +73,13 @@ createSiteMetadata(
 createSiteMetadata(
   n = "ctb0007",
   dataset =
-    "https://docs.google.com/spreadsheets/d/1H-B8ReAc9BepqfQFKnGItXH_04DIlgJuk8ACFnvgZEA/edit#gid=1085102806",
+    "https://docs.google.com/spreadsheets/d/1H-B8ReAc9BepqfQFKnGItXH_04DIlgJuk8ACFnvgZEA/pub?output=csv",
   observations =
-    "https://docs.google.com/spreadsheets/d/1H-B8ReAc9BepqfQFKnGItXH_04DIlgJuk8ACFnvgZEA/edit#gid=133250549",
+    "https://docs.google.com/spreadsheets/d/1YuN5yK-tJtRIQYeGk-QkmAKDicg3CuKckMxrTIiUo_A/pub?output=csv",
   layer =
-    "https://docs.google.com/spreadsheets/d/1H-B8ReAc9BepqfQFKnGItXH_04DIlgJuk8ACFnvgZEA/edit#gid=72748886",
+    "https://docs.google.com/spreadsheets/d/1EvTZQknNGhGqWV1jbgxUnht-A74n76MOIPqTG4PYwHw/pub?output=csv",
   sharing = 
-    "https://docs.google.com/spreadsheets/d/1H-B8ReAc9BepqfQFKnGItXH_04DIlgJuk8ACFnvgZEA/edit?usp=sharing"
+    "https://drive.google.com/open?id=0B7xsLbrOA23oUVN1OF9SdEdlYzg"
 )
 
 # ctb0008 ####
@@ -242,24 +242,24 @@ createSiteMetadata(
 createSiteMetadata(
   n = "ctb0672",
   dataset = 
-    "https://docs.google.com/spreadsheets/d/1_lp9UHUnKi0Y6kSg_OEno-xh_BzGvqin4qBdFmpdZ8M/edit#gid=1691823338",
+    "https://docs.google.com/spreadsheets/d/1_lp9UHUnKi0Y6kSg_OEno-xh_BzGvqin4qBdFmpdZ8M/pub?output=csv",
   observations = 
-    "https://docs.google.com/spreadsheets/d/1HyAVwK1comUPvErDOOEq80KfDazNi1LNd1uimjLMEv4/edit#gid=112014124",
+    "https://docs.google.com/spreadsheets/d/1HyAVwK1comUPvErDOOEq80KfDazNi1LNd1uimjLMEv4/pub?output=csv",
   layer = 
-    "https://docs.google.com/spreadsheets/d/1ohV68-30TUF-zmUL0t_aPsar84E71UElRT5aEb2i6F8/edit#gid=193673171",
+    "https://docs.google.com/spreadsheets/d/1ohV68-30TUF-zmUL0t_aPsar84E71UElRT5aEb2i6F8/pub?output=csv",
   sharing = 
-    "https://drive.google.com/drive/folders/0B7xsLbrOA23oRnRvRmlrMlRyQ1E?usp=sharing"
+    "https://drive.google.com/open?id=0B7xsLbrOA23oRnRvRmlrMlRyQ1E"
 )
 
 # ctb0770 ####
 createSiteMetadata(
   n = "ctb0770",
   dataset = 
-    "https://docs.google.com/spreadsheets/d/13wEFauXRsXBJD0rI8gvHdMxt7iMYA4K8x2LMLQnwRXU/edit#gid=2049891686",
+    "https://docs.google.com/spreadsheets/d/13wEFauXRsXBJD0rI8gvHdMxt7iMYA4K8x2LMLQnwRXU/pub?output=csv",
   observations = 
-    "https://docs.google.com/spreadsheets/d/1OzXAgcC4h-mIGe2B358qVAu33d8vO536JHT8aMVNq8Y/edit#gid=1809478575",
+    "https://docs.google.com/spreadsheets/d/1OzXAgcC4h-mIGe2B358qVAu33d8vO536JHT8aMVNq8Y/pub?output=csv",
   layer = 
-    "https://docs.google.com/spreadsheets/d/1wtIbPo0hPV_EZ5mZwnUoF38m1quVtTF8ebqMgREJ_NA/edit#gid=352534073",
+    "https://docs.google.com/spreadsheets/d/1wtIbPo0hPV_EZ5mZwnUoF38m1quVtTF8ebqMgREJ_NA/pub?output=csv",
   sharing = 
     "https://drive.google.com/open?id=0B7xsLbrOA23oWDFqS2lOUmFBM2M"
 )
