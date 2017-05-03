@@ -1,19 +1,23 @@
 # Calcular contribuições e gerar metadados para website ####
 createSiteMetadata <-
-  function (n, dataset, observation, layer, sharing) {
+  function (n, dataset, observation, layer, metadata, sharing) {
+    
+    # Preparar URL
+    docs_sheet <- "https://docs.google.com/spreadsheets/d/"
+    drive_folder <- "https://drive.google.com/open?id="
+    dataset <- paste(docs_sheet, dataset, sep = "")
+    observation <- paste(docs_sheet, observation, sep = "")
+    layer <- paste(docs_sheet, layer, sep = "")
+    metadata <- paste(docs_sheet, metadata, sep = "")
+    sharing <- paste(drive_folder, sharing, sep = "")
     
     # Descarregar dados
-    # dataset <- as.data.frame(gsheet::gsheet2tbl(dataset))
-    # observation <- gsheet::gsheet2tbl(observation)
-    # layer <- gsheet::gsheet2tbl(layer)
-    
     dataset <- read.csv(
       text = gsheet::gsheet2text(dataset, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
     observation <- read.csv(
       text = gsheet::gsheet2text(observation, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
     layer <- read.csv(
       text = gsheet::gsheet2text(layer, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
-    
     
     # Agregar dados das observações e camadas
     db <- merge(observation, layer, by = "observation_id")
