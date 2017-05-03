@@ -334,6 +334,8 @@ lapply(1:length(db), function (i) {
 # Carregar dados compilados por pesquisadores da Esalq
 esalq <- read.csv(
   "data/raw/fe0003/esalq.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+# esalq_layer <- read.csv(
+  # "data/raw/fe0003/esalq-layer.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 
 # Atribuir informação da UF para dados da Esalq
 states <- raster::shapefile("data/gis/states.shp")
@@ -343,12 +345,26 @@ sp::proj4string(tmp) <- sp::proj4string(states)
 tmp <- sp::over(tmp, states)
 esalq$UF <- tmp[, 1]
 
-# Salvar aquivo da esalq com dados da UF escolhida
+# Salvar aquivos da esalq com dados da UF escolhida
 idx <- which(esalq$UF == uf)
 tmp <- esalq[idx, ]
 write.table(
   tmp, file = paste("data/raw/esalq-", uf, ".csv", sep = ""), sep = "\t", fileEncoding = "UTF-8", 
   row.names = FALSE)
-
+# idx <- esalq_layer$esalq_id %in% tmp$esalq_id
+# write.table(
+  # esalq_layer[idx, ], file = paste("data/raw/esalq-layer-", uf, ".csv", sep = ""), sep = "\t", 
+  # fileEncoding = "UTF-8", row.names = FALSE)
 rm(list = ls())
 gc()
+
+# ctb0770
+esalq_layer <- read.csv(
+"data/raw/fe0003/esalq-layer.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+ctb <- gsheet::gsheet2tbl(
+  "https://docs.google.com/spreadsheets/d/1OzXAgcC4h-mIGe2B358qVAu33d8vO536JHT8aMVNq8Y/edit#gid=1809478575")
+idx <- esalq_layer$esalq_id %in% ctb$observation_id[agrepl("BR", ctb$observation_id)]
+tmp <- esalq_layer[idx, ]
+write.table(
+  tmp, file = paste("data/raw/esalq-layer-tmp.csv", sep = ""), sep = "\t",
+  fileEncoding = "UTF-8", row.names = FALSE)
