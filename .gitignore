@@ -7,3 +7,4 @@ data/raw
 web
 draw
 tmp.csv
+.httr-oauth
