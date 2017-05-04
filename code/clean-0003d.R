@@ -101,7 +101,8 @@ cols_observation <- c(
   "Presença.Contato.lico.fragmentário",
   "Presença.de.Nódulos",
   "Presença.Petroplintita",
-  "Ocorrência.Plintita")
+  "Ocorrência.Plintita", 
+  "Link.para.Descrição.em.PDF")
 cols_layer <- c(
   "Código.PA",
   "Símbolo.Horizonte",
@@ -207,8 +208,10 @@ lapply(1:length(db), function (i) {
     
     # observation
     observation <- unique(db[[i]][, cols_observation])
-    colnames(observation)[c(1:3, 5, 8, 9)] <- 
-      c("observation_id", "observation_id_book", "observation_id_field", "coord_system", "state_id", "city_id")
+    # colnames(observation)[c(1:3, 5, 8, 9)] <- 
+      # c("observation_id", "observation_id_book", "observation_id_field", "coord_system", "state_id", 
+        # "city_id")
+    colnames(observation)[c(1, 5, 8, 9)] <- c("observation_id", "coord_system", "state_id", "city_id")
     observation <- cbind(
       observation[, 1:5],
       coord_accuracy = "",
@@ -243,6 +246,8 @@ lapply(1:length(db), function (i) {
     colnames(observation) <- iconv(colnames(observation), from = "UTF-8", to = 'ASCII//TRANSLIT')
     colnames(observation) <- 
       gsub("informacoes_complementares", "extra_info", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("_para_", "_", colnames(observation), fixed = TRUE)
+    
     write.table(
       observation, 
       file = paste("data/raw/", file_name[i], "-", uf, "-observation.csv", sep = ""), 
