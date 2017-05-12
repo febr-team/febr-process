@@ -14,6 +14,7 @@ source("code/helper-utf8.R", encoding = "UTF-8")
 file <- "fe0003/embrapa.csv"
 db <- read.csv(
   paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+nrow(db)
 
 # Identificar linhas e colunas contendo dados de ferro
 id_col <- colnames(db)[grep("Fe", colnames(db))]
@@ -22,7 +23,7 @@ id_col <- id_col[-2]
 idx <- which(!is.na(db[, id_col]), arr.ind = TRUE)
 id_col <- id_col[unique(idx[, 2])]
 id_row <- unique(idx[, 1])
-db <- db[id_row, ]
+db <- db[id_row, ]; nrow(db)
 
 # Calcular tamanho da contribuição
 # A contribuição é avaliada por unidade federativa. Contudo, existem registros sem informação da unidade
@@ -61,7 +62,7 @@ ctb <- data.frame(
   url = "https://www.bdsolos.cnptia.embrapa.br/consulta_publica.html")
 rownames(ctb) <- NULL
 ctb
-write.csv(ctb, "./web/data/ctb0003.csv", fileEncoding = "UTF-8")  
+write.csv(ctb, "./web/data/ctb0003.csv", fileEncoding = "UTF-8")
 rm(ctb)
 
 # PERFIS ######################################################################################################
@@ -74,7 +75,8 @@ pf <- db[, c(
   "Código.PA", "Número.PA", "Data.da.Coleta", "Título.do.Trabalho", "Ano.de.Publicação", "Tipo.de.Publicação",
   "Número", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
   "Classificação.Original", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "Uso.Atual", "Litologia")]
-pf <- pf[!duplicated(pf$Código.PA), ]
+pf <- pf[!duplicated(pf$Código.PA), ]; nrow(pf)
+sort(summary(as.factor(pf$UF)))
 
 # PERFIS: Data de observação ----
 pf$observation_date <- gsub("/", "-", pf$Data.da.Coleta)
@@ -151,7 +153,7 @@ any(idx, na.rm = TRUE)
 # Longitude
 # Inúmeros registros possuem 'Leste' como valor para o hemisfério, dado este completamente equivocado. Em
 # todos os registros o hemisfério é definido como sendo 'Oeste'. 
-idx <- which(pf[, long_cols[4]] == "Leste")
+idx <- which(pf[, long_cols[4]] == "Leste"); length(idx)
 pf[idx, c(long_cols[4], "Código.PA", "UF")]
 pf[idx, long_cols[4]] <- "Oeste"
 pf[, long_cols[4]] <- ifelse(pf[, long_cols[4]] == "", NA_character_, pf[, long_cols[4]])
@@ -159,6 +161,7 @@ pf[, long_cols[4]] <- ifelse(pf[, long_cols[4]] == "", NA_character_, pf[, long_
 # Inúmeros registros possuem 'Norte' como hemisfério, apesar de não terem sido observados nos estados
 # do AM, AP, PA ou RR. O valor do hemisfério desses registros é alterado para 'Sul'. 
 idx <- which(pf[, lat_cols[4]] == "Norte" & !sapply(pf$UF, function (x) x %in% c("AP", "AM", "PA", "RR")))
+length(idx)
 pf[idx, c(lat_cols[4], "Código.PA", "UF")]
 pf[idx, lat_cols[4]] <- "Sul"
 pf[, lat_cols[4]] <- ifelse(pf[, lat_cols[4]] == "", NA_character_, pf[, lat_cols[4]])
@@ -173,7 +176,7 @@ pf[, lat_cols[4]] <- ifelse(pf[, lat_cols[4]] == "", NA_character_, pf[, lat_col
 # novo valor de latitude cai dentro do intervalo de valores de latitude da unidade federativa onde a 
 # observação foi feita. Os dois registros para os quais a estratégia não funcionou referem-se à observações 
 # feitas em MG e RJ, os quais são anotados para futura conferência.
-idx <- which(pf[, lat_cols[1]] > bb_br[2, 1])
+idx <- which(pf[, lat_cols[1]] > bb_br[2, 1]); length(idx)
 length(idx) != 0
 pf[idx, c(lat_cols[1], "UF", "Código.PA")]
 uf_id <- unique(pf$UF[idx])
@@ -194,7 +197,7 @@ out_uf_lat <- idx[!in_uf]
 # Longitude
 # Similar aos valores de latitude, todos os valores de longitude com erros puderam ser corrigidos dividindo-se
 # a longitude por 10. Mais uma vez, todos os registros com erros referem-se a observações feitas no Acre.
-idx <- which(pf[, long_cols[1]] > bb_br[1, 1])
+idx <- which(pf[, long_cols[1]] > bb_br[1, 1]); length(idx)
 length(idx) != 0
 pf[idx, c(long_cols[1], "UF", "Código.PA")]
 uf_id <- unique(pf$UF[idx])
@@ -208,7 +211,7 @@ pf[idx[in_uf], long_cols[1]] <- pf[idx[in_uf], long_cols[1]] / 10
 # 28º O. Três registros apresentam erros, dois dos quais referindo-se a observações feitas no RJ e MG. Aquele
 # descrito no RJ corresponde ao registro acima cujo erro no valor de latitude não pode ser corrigido. 
 # Aparentemente os valores de latitude e longitude estão trocados.
-idx <- which(pf[, long_cols[1]] < bb_br[1, 2])
+idx <- which(pf[, long_cols[1]] < bb_br[1, 2]); length(idx)
 length(idx) != 0
 pf[idx, c(long_cols[1], "UF", "Código.PA")]
 i <- out_uf_lat[out_uf_lat %in% idx]
@@ -247,8 +250,8 @@ pf[idx[3], lat_cols[1]] <- 21
 # brasileiro. Se essa condição for atendida, então o registro em questão deveria estar no hemisfério sul. Para
 # os demais casos é preciso verificar outras informações.
 # Latitude
-idx <- which(is.na(pf[, lat_cols[4]]) & !is.na(pf[, lat_cols[1]]))
-pf[idx, c(lat_cols[1], "UF")]
+idx <- which(is.na(pf[, lat_cols[4]]) & !is.na(pf[, lat_cols[1]])); length(idx)
+pf[idx, c(lat_cols[1], "UF")]; summary(as.factor(pf[idx, "UF"]))
 pf[idx, lat_cols[4]] <- 
   sapply(idx, function (i) {
     if (pf[i, "UF"] %in% c("AP", "AM", "PA", "RR")) {
@@ -279,7 +282,7 @@ pf[idx, long_cols[4]] <- "Oeste"
 # Em princípio, todos os valores de latitude dos registros no hemisfério norte deveriam ser menores do que
 # 6º N. Eu encontro um único registro, que corresponde à observação feita no município de Humaitá (AM),
 # localizado no hemisfério sul.
-idx <- which(pf[, lat_cols[4]] == "Norte" & pf[, lat_cols[1]] > bb_br[2, 2])
+idx <- which(pf[, lat_cols[4]] == "Norte" & pf[, lat_cols[1]] > bb_br[2, 2]); length(idx)
 length(idx) != 0
 pf[idx, c(lat_cols, "UF", "Código.PA", "Município")]
 pf[idx, lat_cols[4]] <- "Sul"
@@ -293,7 +296,7 @@ pf[idx, lat_cols[4]] <- "Sul"
 # Latitude
 idx <- apply(pf[, lat_cols[2:3]], 2, function (x) x > 60)
 any(idx, na.rm = TRUE)
-idx <- which(idx, arr.ind = TRUE)
+idx <- which(idx, arr.ind = TRUE); nrow(idx)
 any(duplicated(idx[, 1])) # não há registros duplicados
 tmp <- pf[, lat_cols[2:3]][idx]
 tmp # minutos e segundos > 60
@@ -308,7 +311,7 @@ pf[, lat_cols[2:3]][idx] <- tmp
 # Longitude
 idx <- apply(pf[, long_cols[2:3]], 2, function (x) x > 60)
 any(idx, na.rm = TRUE)
-idx <- which(idx, arr.ind = TRUE)
+idx <- which(idx, arr.ind = TRUE); nrow(idx)
 any(duplicated(idx[, 1])) # não há registros duplicados
 tmp <- pf[, long_cols[2:3]][idx]
 tmp # minutos e segundos > 60
@@ -329,6 +332,9 @@ head(pf[, c(lat_cols[-3], "y_coord")], 10)
 pf$x_coord <- dms2dd(x = pf[, long_cols], type = "long")
 head(pf[, c(long_cols[-3], "x_coord")], 10)
 
+
+
+
 # Conferir se todos os registros estão dentro do território brasileiro.
 # Há 17 registros fora do território brasileiro, cinco deles localizados no município de São Gabriel da 
 # Cachoeira-AM, todos eles incluídos no "PROJETO RADAMBRASIL - Levantamento de Recursos Naturais. Volume 11.".
@@ -336,17 +342,30 @@ head(pf[, c(long_cols[-3], "x_coord")], 10)
 # permaneçam dentro de território brasileiro e, talvez um detalhe importante na região amazônica, próximo de 
 # rodovias e/ou cursos de água. Talvez seja necessário verificar se o mesmo problema acontece nos demais
 # registros do volume 11 do RADAMBRASIL.
-idx <- which(!is.na(pf$x_coord))
+idx <- which(!is.na(pf$x_coord)); length(idx)
 tmp <- pf[idx, c("x_coord", "y_coord")]
 sp::coordinates(tmp) <- c("x_coord", "y_coord")
 sp::proj4string(tmp) <- sp::proj4string(states)
 tmp <- sp::over(tmp, states)
 sum(is.na(tmp)) # número de registros fora do território brasileiro
-sp::plot(states)
-idx_out <- idx[which(is.na(tmp))] 
+idx_out <- idx[which(is.na(tmp))]
 idx_out <- idx_out[order(pf[idx_out, "Município"])]
-points(pf[idx_out, c("x_coord", "y_coord")], col = "red")
 summary(as.factor(pf[idx_out, "Município"]))
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+points(pf[-idx_out, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[idx_out, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
+# Preparar figura com observações fora do território
+dev.off()
+png("res/fig/sisb-a-points-out-brasil.png", width = 600, height = 600, res = 150)
+par(mar = c(2, 2, 0, 0) + 0.1)
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+points(pf[-idx_out, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[idx_out, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
+text(-74.5, 5, "a)")
+dev.off()
+
 # São Gabriel da Cachoeira
 i <- idx_out[which(pf[idx_out, "Município"] == "São Gabriel da Cachoeira")]
 pf[i, c("Título.do.Trabalho", "Referência.Bibliográfica", "Número.PA", "y_coord", "x_coord")]
@@ -359,7 +378,7 @@ pf[i, c("Título.do.Trabalho", "Referência.Bibliográfica", "Número.PA", "y_co
 pf[i, "y_coord"] <- pf[i, "y_coord"] - 2
 # Demais municípios
 i <- idx_out[which(pf[idx_out, "Município"] != "São Gabriel da Cachoeira")]
-pf[i, c("Município", "y_coord", "x_coord")]
+pf[i, c("Município", "y_coord", "x_coord", "UF")]
 # Lat -19º ao invés de -24°.
 j <- 1
 pf[i[j], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
@@ -429,7 +448,21 @@ idx_uf <- cbind(pf$UF[idx], tmp)
 idx_uf <- which(idx_uf[, 1] != idx_uf[, 2])
 length(idx_uf) # numero de registros fora da respectiva unidade federativa.
 idx_uf <- idx[idx_uf]
-points(pf[idx_uf, c("x_coord", "y_coord")], col = "blue")
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+points(pf[-idx_uf, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[idx_uf, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
+
+# dev.off()
+# png("res/fig/sisb-a-points-out-uf.png", width = 600, height = 600, res = 150)
+# par(mar = c(2, 2, 0, 0) + 0.1)
+# sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+# abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+# points(pf[-idx_uf, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+# points(pf[idx_uf, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
+# text(-74.5, 5, "b)")
+# dev.off()
+
 # Lat -29 ao invés de -27
 i <- 1
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
@@ -1042,6 +1075,18 @@ for (i in 1:length(idx_crs)) {
   tmp <- sp::spTransform(tmp, states@proj4string)
   pf[j, c("x_coord", "y_coord")] <- tmp@coords
 }
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+points(pf[, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+
+# dev.off()
+# png("res/fig/sisb-a-points-utm.png", width = 600, height = 600, res = 150)
+# par(mar = c(2, 2, 0, 0) + 0.1)
+# sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+# abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+# points(pf[, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+# text(-74.5, 5, "c)")
+# dev.off()
 
 # Identificar registros sem coordenadas. Existem quase 3 mil registros sem coordenadas. É muita coisa!!!
 idx <- which(is.na(pf$x_coord))
@@ -1427,6 +1472,16 @@ tmp$UF <- ifelse(!is.na(tmp$UF.x), tmp$UF.x, tmp$UF.y)
 tmp <- tmp[, !colnames(tmp) %in% c("UF.x", "UF.y", "Município.x", "Município.y")]
 sum(is.na(tmp$x_coord))
 str(tmp)
-sp::plot(states, asp = 1, axes = T)
-points(tmp[, 2:3], cex = 0.5)
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+points(tmp[, 2:3], col = "olivedrab", pch = 18, cex = 0.5)
+
+# dev.off()
+# png("res/fig/sisb-a-points-esalq.png", width = 600, height = 600, res = 150)
+# par(mar = c(2, 2, 0, 0) + 0.1)
+# sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+# abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+# points(tmp[, 2:3], col = "olivedrab", pch = 18, cex = 0.5)
+# text(-74.5, 5, "d)")
+# dev.off()
+
 write.table(tmp, file = "data/raw/fe0003/embrapa-pos-01.csv", sep = ";", fileEncoding = "UTF-8")
