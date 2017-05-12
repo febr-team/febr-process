@@ -1,3 +1,14 @@
+# Transformação de sistema de coordenadas de referência ####
+spTransform0 <- 
+  function (coord_x, coord_y, crs_src, crs_dst = "EPSG:4326") {
+    y <- sp::SpatialPoints(
+      matrix(c(coord_x, coord_y), nrow = 1), 
+      proj4string = sp::CRS(paste("+init=", tolower(crs_src), sep = "")))
+    y <- sp::spTransform(y, sp::CRS(paste("+init=", tolower(crs_dst), sep = "")))
+    y$coord_system <- crs_dst
+    as.data.frame(y)
+  }
+
 # Calcular contribuições e gerar metadados para website ####
 createSiteMetadata <-
   function (n, dataset, observation, layer, metadata, sharing) {
