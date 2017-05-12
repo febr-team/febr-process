@@ -73,10 +73,10 @@ long_cols <- colnames(db)[grep("Long", colnames(db))]
 pf <- db[, c(
   "Código.Trabalho", "Localização.descritiva", "Referência.Bibliográfica",
   "Código.PA", "Número.PA", "Data.da.Coleta", "Título.do.Trabalho", "Ano.de.Publicação", "Tipo.de.Publicação",
-  "Número", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
+  "Número", "Sistema.de.Coordenada", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
   "Classificação.Original", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "Uso.Atual", "Litologia")]
 pf <- pf[!duplicated(pf$Código.PA), ]; nrow(pf)
-sort(summary(as.factor(pf$UF)))
+sort(summary(as.factor(pf$UF)), decreasing = TRUE)
 
 # PERFIS: Data de observação ----
 pf$observation_date <- gsub("/", "-", pf$Data.da.Coleta)
@@ -332,8 +332,23 @@ head(pf[, c(lat_cols[-3], "y_coord")], 10)
 pf$x_coord <- dms2dd(x = pf[, long_cols], type = "long")
 head(pf[, c(long_cols[-3], "x_coord")], 10)
 
-
-
+# Conferir quais observações possuem informação sobre o datum geodético
+# Apenas 56, algumas com coordenadas projetadas, outras geográficas, a maioria em SC.
+summary(as.factor(pf$Datum))
+idx <- which(pf$Datum == "SAD69")
+summary(as.factor(pf$Título.do.Trabalho[idx]))
+idx <- which(pf$Datum == "Córrego Alegre")
+summary(as.factor(pf$Título.do.Trabalho[idx]))
+# Assumo que essa informação está correta e transformo as coordenadas para WGS84.
+idx <- which(pf$Datum != "" & !is.na(pf$x_coord))
+tmp <- pf[idx, c("Datum", "x_coord", "y_coord")]
+tmp$Datum <- ifelse(tmp$Datum == "SAD69", "EPSG:4618", "EPSG:4225")
+tmp <- lapply(1:nrow(tmp), function (i) 
+  spTransform0(coord_x = tmp[i, "x_coord"], coord_y = tmp[i, "y_coord"], crs_src = tmp[i, "Datum"]))
+pf[idx, c("Datum", "x_coord", "y_coord")] <- do.call(rbind, tmp)
+# Assumir WGS84 para todas as demais observações
+idx <- which(pf$Datum == "" & !is.na(pf$x_coord))
+pf$Datum[idx] <- "EPSG:4326"
 
 # Conferir se todos os registros estão dentro do território brasileiro.
 # Há 17 registros fora do território brasileiro, cinco deles localizados no município de São Gabriel da 
