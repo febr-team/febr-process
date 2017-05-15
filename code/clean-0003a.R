@@ -367,7 +367,6 @@ idx_out <- idx[which(is.na(tmp))]
 idx_out <- idx_out[order(pf[idx_out, "Município"])]
 summary(as.factor(pf[idx_out, "Município"]))
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
-abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
 points(pf[-idx_out, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
 points(pf[idx_out, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
 # Preparar figura com observações fora do território
@@ -378,6 +377,11 @@ sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
 points(pf[-idx_out, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
 points(pf[idx_out, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
+points(y = -2.490022, x = -54.774709, pch = 4, cex = 0.5)
+text(y = -2.490022, x = -54.774709, "Santarém", pos = 4, cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "PA"), ]), labels = "PA", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "AM"), ]), labels = "AM", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "RJ"), ]), labels = "RJ", cex = 0.5, pos = 4, offset = 1)
 text(-74.5, 5, "a)")
 dev.off()
 
@@ -464,19 +468,25 @@ idx_uf <- which(idx_uf[, 1] != idx_uf[, 2])
 length(idx_uf) # numero de registros fora da respectiva unidade federativa.
 idx_uf <- idx[idx_uf]
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+points(pf[-idx_uf, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[idx_uf, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
+# Preparar figura
+dev.off()
+png("res/fig/sisb-a-points-out-uf.png", width = 600, height = 600, res = 150)
+par(mar = c(2, 2, 0, 0) + 0.1)
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
 points(pf[-idx_uf, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
 points(pf[idx_uf, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
-
-# dev.off()
-# png("res/fig/sisb-a-points-out-uf.png", width = 600, height = 600, res = 150)
-# par(mar = c(2, 2, 0, 0) + 0.1)
-# sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
-# abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
-# points(pf[-idx_uf, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
-# points(pf[idx_uf, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
-# text(-74.5, 5, "b)")
-# dev.off()
+text(sp::coordinates(states[which(states$uf == "TO"), ]), "TO", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "PA"), ]), "PA", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "GO"), ]), "GO", cex = 0.5, pos = 3)
+points(y = -1.295154, x = -47.921455, pch = 4, cex = 0.5)
+text(y = -1.295154, x = -46, "Castanhal", cex = 0.5, pos = 3)
+points(y = -5.647888, x = -48.118402, pch = 4, cex = 0.5)
+text(y = -5.647888, x = -48.118402, "Araguatins", cex = 0.5, pos = 2)
+text(-74.5, 5, "b)")
+dev.off()
 
 # Lat -29 ao invés de -27
 i <- 1
@@ -849,7 +859,6 @@ i <- 74
 pf[idx_uf[i], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva", "Título.do.Trabalho")]
 # googlemaps(pf[idx_uf[i], c("y_coord", "x_coord")])
 pf[idx_uf[i], c("y_coord", "x_coord")] <- c(-1.124704, -46.523179)
-#
 
 # Verificar se todos os registros possuem coordenadas x e y.
 # Há um registro na cidade de Macaé. Não consegui encontrar o original. Lat e Long foram estimados.
@@ -951,7 +960,7 @@ tmp[i, 1:2] <- c(650485, 6990015)
 # Coordenadas corrigidas
 pf[idx[idx_n], c("Easting", "Northing")] <- tmp[as.character(idx[idx_n]), 1:2]
 
-# Conferir se os registros com coordenadas UTM possui dado sobre o fuso.
+# Conferir se os registros com coordenadas UTM possuem dado sobre o fuso.
 # Curiosamente a base de dados não exportou o fuso. A solução é verificar o número de trabalhos que contém
 # coordenadas UTM, e então buscar o fuso na fonte. Isso deve ser fácil, pois são apenas 13 trabalhos. Em 
 # alguns casos, informações sobre o sistema de coordenadas de referência são dadas na descrição dos perfis.
@@ -963,87 +972,90 @@ works <- unique(pf[idx, "Título.do.Trabalho"])
 #
 i <- 1
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 2
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 3
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 4
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 5
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 6
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 7
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 8
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 9
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 10
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 11
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 12
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 13
 works[i]
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
 pf[idx, "Localização.descritiva"][id_utm]
-tmp <- pf[idx, "Localização.descritiva"][id_utm]
-tmp <- lapply(tmp, function (x) {
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
+tmp <- lapply(pf[idx, "Localização.descritiva"][id_utm], function (x) {
   out <- unlist(stringr::str_split(stringr::str_trim(stringr::str_split_fixed(x, "UTM:", n = 2)[2]), " "))
   out <- as.numeric(out)
   out[which(!is.na(out))[1]]
 })
 tmp <- paste("+proj=utm +zone=", tmp, " +south +datum=WGS84 +units=m +no_defs", sep = "")
 pf[idx, "utm"][id_utm] <- tmp
+
+
+
 
 # Converter coordenadas métricas para grau decimal.
 idx_crs <- unique(pf[idx, "utm"])
