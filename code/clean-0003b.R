@@ -12,8 +12,7 @@ source("code/helper-utf8.R", encoding = "UTF-8")
 
 # Carregar dados
 db <- read.csv(
-  "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, 
-  encoding = "UTF-8")
+  "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 
 # Identificar linhas e colunas contendo dados de ferro
 id_col <- colnames(db)[grep("Fe", colnames(db))] 
@@ -69,7 +68,7 @@ long_cols <- colnames(db)[grep("Long", colnames(db))]
 pf <- db[, c(
   "Código.Trabalho", "Localização.descritiva", "Referência.Bibliográfica",
   "Código.PA", "Número.PA", "Data.da.Coleta", "Título.do.Trabalho", "Ano.de.Publicação", "Tipo.de.Publicação",
-  "Número", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
+  "Número", "Sistema.de.Coordenada", "Datum", "Northing", "Easting", lat_cols, long_cols, "UF", "Município",
   "Classificação.Original", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "Uso.Atual", "Litologia")]
 pf <- pf[!duplicated(pf$Código.PA), ]
 
@@ -267,6 +266,26 @@ head(pf[, c(lat_cols[-3], "y_coord")], 10)
 # Longitude
 pf$x_coord <- dms2dd(x = pf[, long_cols], type = "long")
 head(pf[, c(long_cols[-3], "x_coord")], 10)
+
+# Conferir quais observações possuem informação sobre o datum geodético
+# Há 164, a maioria com coordenadas projetadas.
+summary(as.factor(pf$Datum))
+idx <- which(pf$Datum == "SAD69")
+summary(as.factor(pf$Título.do.Trabalho[idx]))
+idx <- which(pf$Datum == "Córrego Alegre")
+summary(as.factor(pf$Título.do.Trabalho[idx]))
+idx <- which(pf$Datum == "SIRGAS")
+summary(as.factor(pf$Título.do.Trabalho[idx]))
+# Assumo que essa informação está correta e transformo as coordenadas para WGS84.
+idx <- which(pf$Datum != "" & !is.na(pf$x_coord))
+tmp <- pf[idx, c("Datum", "x_coord", "y_coord")]
+tmp$Datum <- ifelse(tmp$Datum == "SAD69", "EPSG:4618", "EPSG:4225")
+tmp <- lapply(1:nrow(tmp), function (i) 
+  spTransform0(coord_x = tmp[i, "x_coord"], coord_y = tmp[i, "y_coord"], crs_src = tmp[i, "Datum"]))
+pf[idx, c("Datum", "x_coord", "y_coord")] <- do.call(rbind, tmp)
+# Assumir WGS84 para todas as demais observações
+idx <- which(pf$Datum == "" & !is.na(pf$x_coord))
+pf$Datum[idx] <- "EPSG:4326"
 
 # Conferir se todos os registros estão dentro do território brasileiro.
 # São 24 perfis com coordenadas fora do território brasileiro.
@@ -808,158 +827,166 @@ works <- unique(pf[idx, "Título.do.Trabalho"])
 #
 i <- 1
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 2
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- 
+  ifelse(
+    pf[idx, "Datum"][id_utm] == "SAD69",
+    "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs",
+    "+proj=utm +zone=22 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 #
 i <- 3
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 4
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Localização.descritiva"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 5
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Município"][id_utm]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 6
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Título.do.Trabalho"][id_utm]
+pf[idx, c("Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 7
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Município"][id_utm]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 8
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Município"][id_utm]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 9
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, "Município"][id_utm]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- 
+  ifelse(
+    pf[idx, "Datum"][id_utm] == "SAD69",
+    "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs",
+    "+proj=utm +zone=22 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs")
 #
 i <- 10
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 11
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=21 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 12
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 13
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 14
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 15
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 16
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 17
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 18
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=23 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 19
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 20
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 21
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=19 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 22
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 23
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 24
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 25
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 26
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 27
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 28
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=24 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 29
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
 pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
 #
 i <- 30
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 #
 i <- 31
 id_utm <- which(pf[idx, "Título.do.Trabalho"] == works[i])
-pf[idx, c("Localização.descritiva", "Município", "UF")][id_utm, ]
-pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +datum=WGS84 +units=m +no_defs"
+pf[idx, c("Município", "Localização.descritiva", "Datum")][id_utm, ]
+pf[idx, "utm"][id_utm] <- "+proj=utm +zone=22 +south +ellps=GRS67 +units=m +no_defs"
 
 # Converter coordenadas métricas para grau decimal.
 idx_crs <- unique(pf[idx, "utm"])
@@ -1002,7 +1029,7 @@ for (i in 1:length(idx_crs)) {
   pf[j, c("x_coord", "y_coord")] <- tmp@coords
 }
 
-# Identificar registros sem coordenadas. Existem quase 3 mil registros sem coordenadas. É muita coisa!!!
+# Identificar registros sem coordenadas. Existem mais 1 mil registros sem coordenadas. Ainda é muita coisa!!!
 idx <- which(is.na(pf$x_coord))
 length(idx)
 length(pf$x_coord)
