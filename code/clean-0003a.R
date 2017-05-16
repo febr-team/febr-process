@@ -369,9 +369,9 @@ summary(as.factor(pf[idx_out, "Município"]))
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 points(pf[-idx_out, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
 points(pf[idx_out, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
-# Preparar figura com observações fora do território
+# Figura: Observações fora do território brasileiro ####
 dev.off()
-png("res/fig/sisb-a-points-out-brasil.png", width = 600, height = 600, res = 150)
+png("res/fig/sisb-a-points-out-brasil.png", width = 1200, height = 1200, res = 300)
 par(mar = c(2, 2, 0, 0) + 0.1)
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
@@ -382,6 +382,8 @@ text(y = -2.490022, x = -54.774709, "Santarém", pos = 4, cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "PA"), ]), labels = "PA", cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "AM"), ]), labels = "AM", cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "RJ"), ]), labels = "RJ", cex = 0.5, pos = 4, offset = 1)
+points(y = -0.119879, x = -67.084119, pch = 4, cex = 0.5)
+text(y = -0.119879, x = -67.084119, "São Gabriel\nda Cachoeira", pos = 2, cex = 0.5)
 text(-74.5, 5, "a)")
 dev.off()
 
@@ -470,9 +472,9 @@ idx_uf <- idx[idx_uf]
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 points(pf[-idx_uf, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
 points(pf[idx_uf, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
-# Preparar figura
+# Figura: Observações fora da UF ####
 dev.off()
-png("res/fig/sisb-a-points-out-uf.png", width = 600, height = 600, res = 150)
+png("res/fig/sisb-a-points-out-uf.png", width = 1200, height = 1200, res = 300)
 par(mar = c(2, 2, 0, 0) + 0.1)
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
@@ -1054,9 +1056,6 @@ tmp <- lapply(pf[idx, "Localização.descritiva"][id_utm], function (x) {
 tmp <- paste("+proj=utm +zone=", tmp, " +south +datum=WGS84 +units=m +no_defs", sep = "")
 pf[idx, "utm"][id_utm] <- tmp
 
-
-
-
 # Converter coordenadas métricas para grau decimal.
 idx_crs <- unique(pf[idx, "utm"])
 for (i in 1:length(idx_crs)) {
@@ -1102,22 +1101,30 @@ for (i in 1:length(idx_crs)) {
   tmp <- sp::spTransform(tmp, states@proj4string)
   pf[j, c("x_coord", "y_coord")] <- tmp@coords
 }
+sum(!is.na(pf$x_coord))
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
 points(pf[, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
-
-# dev.off()
-# png("res/fig/sisb-a-points-utm.png", width = 600, height = 600, res = 150)
-# par(mar = c(2, 2, 0, 0) + 0.1)
-# sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
-# abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
-# points(pf[, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
-# text(-74.5, 5, "c)")
-# dev.off()
+# Figura: Observations with geographic and projected coordinates ####
+dev.off()
+png("res/fig/sisb-a-points-utm.png", width = 1200, height = 1200, res = 300)
+par(mar = c(2, 2, 0, 0) + 0.1)
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+points(pf[, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "BA"), ]), labels = "BA", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "MG"), ]), labels = "MG", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "PR"), ]), labels = "PR", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "PA"), ]), labels = "PA", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "SP"), ]), labels = "SP", cex = 0.5)
+text(sp::coordinates(states[which(states$uf == "RS"), ]), labels = "RS", cex = 0.5)
+text(-74.5, 5, "c)")
+dev.off()
 
 # Identificar registros sem coordenadas. Existem quase 3 mil registros sem coordenadas. É muita coisa!!!
 idx <- which(is.na(pf$x_coord))
 length(idx)
+sort(summary(as.factor(pf$UF[idx])), decreasing = TRUE)
 
 # Identificar registros do projeto RADAMBRASIL
 pf$radam <- FALSE
@@ -1482,7 +1489,8 @@ pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 # Identificar quantos registros ainda estão sem coordenadas.
 # Ainda são 2 mil perfis com dados de ferro mas sem coordenadas.
 idx <- which(is.na(pf$x_coord));length(idx)
-length(idx)/nrow(pf)
+round(length(idx)/nrow(pf) * 100)
+sort(summary(as.factor(pf$UF[idx])), decreasing = TRUE)
 
 # Recarregar dados do SISB e fundir com os dados processados até aqui.
 # Os dados são salvos em um arquivo CSV para uso posterior.
@@ -1501,14 +1509,25 @@ sum(is.na(tmp$x_coord))
 str(tmp)
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 points(tmp[, 2:3], col = "olivedrab", pch = 18, cex = 0.5)
+# Figura: adição das coordenadas da esalq ####
+dev.off()
+png("res/fig/sisb-a-points-esalq.png", width = 1200, height = 1200, res = 300)
+cex <- 0.5
+par(mar = c(2, 2, 0, 0) + 0.1)
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
+points(tmp[, 2:3], col = "olivedrab", pch = 18, cex = 0.5)
+text(-74.5, 5, "d)")
+text(sp::coordinates(states[which(states$uf == "PR"), ]), labels = "PR", cex = cex)
+text(sp::coordinates(states[which(states$uf == "SP"), ]), labels = "SP", cex = cex)
+text(sp::coordinates(states[which(states$uf == "MG"), ]), labels = "MG", cex = cex)
+text(sp::coordinates(states[which(states$uf == "BA"), ]), labels = "BA", cex = cex)
+text(sp::coordinates(states[which(states$uf == "CE"), ]), labels = "CE", cex = cex, pos = 3, offset = 1.1)
+text(sp::coordinates(states[which(states$uf == "RN"), ]), labels = "RN", cex = cex, pos = 3, offset = 0.8)
+text(sp::coordinates(states[which(states$uf == "PE"), ]), labels = "PE", cex = cex, pos = 4, offset = 1.5)
+text(sp::coordinates(states[which(states$uf == "PB"), ]), labels = "PB", cex = cex, pos = 4, offset = 1)
+text(sp::coordinates(states[which(states$uf == "ES"), ]), labels = "ES", cex = cex, pos = 4)
+dev.off()
 
-# dev.off()
-# png("res/fig/sisb-a-points-esalq.png", width = 600, height = 600, res = 150)
-# par(mar = c(2, 2, 0, 0) + 0.1)
-# sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
-# abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
-# points(tmp[, 2:3], col = "olivedrab", pch = 18, cex = 0.5)
-# text(-74.5, 5, "d)")
-# dev.off()
-
+# Salvar dados
 write.table(tmp, file = "data/raw/fe0003/embrapa-pos-01.csv", sep = ";", fileEncoding = "UTF-8")
