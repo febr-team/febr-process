@@ -385,6 +385,8 @@ text(sp::coordinates(states[which(states$uf == "RJ"), ]), labels = "RJ", cex = 0
 points(y = -0.119879, x = -67.084119, pch = 4, cex = 0.5)
 text(y = -0.119879, x = -67.084119, "São Gabriel\nda Cachoeira", pos = 2, cex = 0.5)
 text(-74.5, 5, "a)")
+legend(x = -48, y = 6, legend = c("Ill-positioned observation", "Well-positioned observation"), 
+       col = c("maroon1", "olivedrab"), pch = c(20, 18), bty = "n", cex = 0.5, pt.cex = c(1, 0.5))
 dev.off()
 
 # São Gabriel da Cachoeira
@@ -487,6 +489,8 @@ points(y = -1.295154, x = -47.921455, pch = 4, cex = 0.5)
 text(y = -1.295154, x = -46, "Castanhal", cex = 0.5, pos = 3)
 points(y = -5.647888, x = -48.118402, pch = 4, cex = 0.5)
 text(y = -5.647888, x = -48.118402, "Araguatins", cex = 0.5, pos = 2)
+legend(x = -48, y = 6, legend = c("Ill-positioned observation", "Well-positioned observation"), 
+       col = c("maroon1", "olivedrab"), pch = c(20, 18), bty = "n", cex = 0.5, pt.cex = c(1, 0.5))
 text(-74.5, 5, "b)")
 dev.off()
 
