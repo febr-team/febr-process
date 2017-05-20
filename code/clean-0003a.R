@@ -1490,6 +1490,53 @@ cbind(pf[idx[j], "Número.PA"], esalq[l, "OrgProfID"][k])
 cbind(pf[idx[j], "Classificação.Original"], esalq[l, "SiBCS1998"][k])
 pf[idx[j], c("x_coord", "y_coord")] <- esalq[l, c("longitude", "latitude")][k, ]
 
+# Conferir se todos os registros estão dentro do território brasileiro.
+# Há seis observações fora do território brasileiro, todas elas da base de dados da Esalq, pois aquelas
+# do SISB já foram corrigidas.
+idx <- which(!is.na(pf$x_coord)); length(idx)
+tmp <- pf[idx, c("x_coord", "y_coord")]
+sp::coordinates(tmp) <- c("x_coord", "y_coord")
+sp::proj4string(tmp) <- sp::proj4string(states)
+tmp <- sp::over(tmp, states)
+sum(is.na(tmp)) # número de registros fora do território brasileiro
+idx_out <- idx[which(is.na(tmp))]
+idx_out <- idx_out[order(pf[idx_out, "Município"])]
+summary(as.factor(pf[idx_out, "Município"]))
+sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
+points(pf[-idx_out, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[idx_out, c("x_coord", "y_coord")], col = "maroon1", pch = 20)
+
+# Lat -1º ao invés de -0°.
+j <- 1
+pf[idx_out[j], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
+# googlemaps(pf[idx_out[j], c("y_coord", "x_coord")])
+pf[idx_out[j], "y_coord"] <- pf[idx_out[j], "y_coord"] - 1
+# Long -61º ao invés de -64°.
+j <- 2
+pf[idx_out[j], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
+# googlemaps(pf[idx_out[j], c("y_coord", "x_coord")])
+pf[idx_out[j], "x_coord"] <- pf[idx_out[j], "x_coord"] + 3
+# Long -38.5 ao invés de -38°
+j <- 3
+pf[idx_out[j], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
+# googlemaps(pf[idx_out[j], c("y_coord", "x_coord")])
+pf[idx_out[j], "x_coord"] <- pf[idx_out[j], "x_coord"] - 0.5
+# Lat -24.18 ao invés de -24.23°
+j <- 4
+pf[idx_out[j], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
+# googlemaps(pf[idx_out[j], c("y_coord", "x_coord")])
+pf[idx_out[j], "y_coord"] <- pf[idx_out[j], "y_coord"] + 0.05
+# Lat e Long
+j <- 5
+pf[idx_out[j], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
+# googlemaps(pf[idx_out[j], c("y_coord", "x_coord")])
+pf[idx_out[j], c("y_coord", "x_coord")] <- c(-19.499521, -40.333462)
+# Lat e Long
+j <- 6
+pf[idx_out[j], c("y_coord", "x_coord", "UF", "Município", "Localização.descritiva")]
+# googlemaps(pf[idx_out[j], c("y_coord", "x_coord")])
+pf[idx_out[j], c("y_coord", "x_coord")] <- c(-20.146468, -40.201003)
+
 # Identificar quantos registros ainda estão sem coordenadas.
 # Ainda são 2 mil perfis com dados de ferro mas sem coordenadas.
 idx <- which(is.na(pf$x_coord));length(idx)
