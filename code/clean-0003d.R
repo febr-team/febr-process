@@ -222,6 +222,8 @@ lapply(1:length(db), function (i) {
       sample_area = as.character(1),
       observation[, 6:ncol(observation)]
     )
+    colnames(observation) <- gsub("y_coord", "coord_y", colnames(observation), fixed = TRUE)
+    colnames(observation) <- gsub("x_coord", "coord_x", colnames(observation), fixed = TRUE)
     colnames(observation) <- gsub("...", ".", colnames(observation), fixed = TRUE)
     colnames(observation) <- gsub("..", ".", colnames(observation), fixed = TRUE)
     colnames(observation) <- gsub(".", "_", colnames(observation), fixed = TRUE)
