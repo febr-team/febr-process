@@ -40,6 +40,10 @@ createSiteMetadata <-
       idx <- which(!is.na(db[, id_col]), arr.ind = TRUE)
       if (is.null(dim(idx))) {
         id_row <- idx
+      } else if (prod(dim(idx)) == 0) {
+        cat("Não há dados de ferro")
+        return (NULL)
+        
       } else {
         id_col <- id_col[unique(idx[, 2])]
         id_row <- unique(idx[, 1])
