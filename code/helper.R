@@ -31,7 +31,7 @@ createSiteMetadata <-
       text = gsheet::gsheet2text(layer, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
     
     # Agregar dados das observações e camadas
-    db <- merge(observation, layer, by = "observation_id")
+    db <- merge(observation, layer, by = "observacao_id")
     
     # Identificar linhas e colunas contendo dados de ferro
     # Gerar metadados apenas se realmente houver dados de ferro
@@ -51,14 +51,14 @@ createSiteMetadata <-
       
       # Preparar descrição da contribuição 
       ctb <- data.frame(
-        Nome = stringr::str_split_fixed(dataset[dataset$item == "author_name", "data"], ";", n = Inf)[1],
+        Nome = stringr::str_split_fixed(dataset[dataset$item == "autor_nome", 2], ";", n = Inf)[1],
         Instituição =
-          stringr::str_split_fixed(dataset[dataset$item == "organization_name", 2], ";", n = Inf)[1],
-        Título = dataset[dataset$item == "dataset_title", 2],
-        UF = levels(as.factor(db[id_row, "state_id"])),
-        Contribuição = summary(as.factor(db[id_row, "state_id"])),
+          stringr::str_split_fixed(dataset[dataset$item == "organizacao_nome", 2], ";", n = Inf)[1],
+        Título = dataset[dataset$item == "dataset_titulo", 2],
+        UF = levels(as.factor(db[id_row, "estado_id"])),
+        Contribuição = summary(as.factor(db[id_row, "estado_id"])),
         Tipo = ifelse(
-          dataset[dataset$item == "subject", "data"] == "Gênese, Morfologia e Classificação dos Solos",
+          dataset[dataset$item == "area_conhecimento", 2] == "Gênese, Morfologia e Classificação dos Solos",
           "PEDOLÓGICO", "EDAFOLÓGICO"),
         url = sharing)
       rownames(ctb) <- NULL
