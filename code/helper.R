@@ -49,9 +49,18 @@ createSiteMetadata <-
         id_row <- unique(idx[, 1])
       }
       
+      # Preparar nome dos autores. Para conjuntos de dados com múltiplos autores, apenas os dois primeiros
+      # são apresentados.
+      Nome <- stringr::str_split_fixed(dataset[dataset$item == "autor_nome", 2], ";", n = Inf)
+      if (length(Nome) > 2) {
+      Nome <- paste(paste(Nome[1:2], collapse = "; "), "et alli")
+      } else {
+        paste(Nome, collapse = "; ")
+      }
+      
       # Preparar descrição da contribuição 
       ctb <- data.frame(
-        Nome = stringr::str_split_fixed(dataset[dataset$item == "autor_nome", 2], ";", n = Inf)[1],
+        Nome = paste(Nome, collapse = "; "),
         Instituição =
           stringr::str_split_fixed(dataset[dataset$item == "organizacao_nome", 2], ";", n = Inf)[1],
         Título = dataset[dataset$item == "dataset_titulo", 2],
