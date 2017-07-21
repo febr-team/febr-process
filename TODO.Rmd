@@ -1,0 +1,8 @@
+---
+title: "TODO"
+author: "Alessandro Samuel-Rosa"
+date: "21 July 2017"
+output: html_document
+---
+
+* Flexibilizar geração de metadados dos datasets para quando houver mais de uma área do conhecimento
