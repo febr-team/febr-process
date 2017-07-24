@@ -56,13 +56,13 @@ createSiteMetadata <-
         Nome = paste(Nome, collapse = "; "),
         Instituição =
           stringr::str_split_fixed(dataset[dataset$item == "organizacao_nome", 2], ";", n = Inf)[1],
-        Título = dataset[dataset$item == "dataset_titulo", 2],
+        Título = dataset[[2]][dataset$item == "dataset_titulo"],
         UF = levels(as.factor(db[id_row, "estado_id"])),
         Contribuição = summary(as.factor(na.omit(db[id_row, "estado_id"]))),
         # Por padrão, se mais de uma área do conhecimento é especificada, então assume-se que o trabalho é
         # do tipo EDAFOLÓGICO.
         Tipo = ifelse(
-          dataset[dataset$item == "area_conhecimento", 2] == "Gênese, Morfologia e Classificação dos Solos",
+          dataset[[2]][dataset$item == "area_conhecimento"] == "Gênese, Morfologia e Classificação dos Solos",
           "PEDOLÓGICO", "EDAFOLÓGICO"),
         url = sharing)
       rownames(ctb) <- NULL

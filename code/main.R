@@ -3,12 +3,12 @@
 # Preparar ambiente de trabalho
 rm(list = ls())
 source("code/helper.R")
-library(googlesheets)
 
 # Descarregar chaves de identificação das planilhas do repositório
-sheets_keys <- gs_read_csv(gs_key("18yP9Hpp8oMdbGsf6cVu4vkDv-Dj-j5gjEFgEXN-5H-Q"))
+sheets_keys <- googlesheets::gs_read_csv(googlesheets::gs_key("18yP9Hpp8oMdbGsf6cVu4vkDv-Dj-j5gjEFgEXN-5H-Q"))
 
 # Preparar metadados para website (todos)
+# i <- 1
 t0 <- proc.time()
 lapply(1:nrow(sheets_keys), function (i) {
   x <- unlist(sheets_keys[i, ])
