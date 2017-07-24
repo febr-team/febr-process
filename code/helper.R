@@ -9,7 +9,7 @@ spTransform0 <-
     as.data.frame(y)
   }
 
-# Calcular contribuições e gerar metadados para website ####
+# Calcular contribuições e gerar metadados para website #######################################################
 createSiteMetadata <-
   function (n, dataset, observation, layer, metadata, sharing) {
     
@@ -25,7 +25,12 @@ createSiteMetadata <-
     layer <- suppressMessages(gs_read_csv(gs_key(layer), comment = "unidade", verbose = FALSE))
     
     # Agregar dados das observações e camadas
-    db <- merge(observation, layer, by = "observacao_id")
+    # Usar apenas as colunas necessárias: assume-se que o número máximo de colunas necessárias da tabela
+    # 'layer' seja 15.
+    db <- merge(
+      observation[, c("observacao_id", "estado_id")], 
+      layer[, 1:ifelse(ncol(layer) > 15, 15, ncol(layer))],
+      by = "observacao_id")
     
     # Identificar linhas e colunas contendo dados de ferro
     # Gerar metadados apenas se realmente houver dados de ferro
@@ -70,6 +75,7 @@ createSiteMetadata <-
       
       # Salvar arquivo com descrição da contribuição para publicação no website
       write.csv(ctb, file = paste("./febr-website/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
+      
     } else {
       cat("Não há dados de ferro")
     }
