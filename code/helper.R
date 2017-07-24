@@ -16,19 +16,13 @@ createSiteMetadata <-
     # Preparar URL
     docs_sheet <- "https://docs.google.com/spreadsheets/d/"
     drive_folder <- "https://drive.google.com/open?id="
-    dataset <- paste(docs_sheet, dataset, sep = "")
-    observation <- paste(docs_sheet, observation, sep = "")
-    layer <- paste(docs_sheet, layer, sep = "")
     metadata <- paste(docs_sheet, metadata, sep = "")
     sharing <- paste(drive_folder, sharing, sep = "")
     
     # Descarregar dados
-    dataset <- read.csv(
-      text = gsheet::gsheet2text(dataset, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
-    observation <- read.csv(
-      text = gsheet::gsheet2text(observation, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
-    layer <- read.csv(
-      text = gsheet::gsheet2text(layer, format = 'csv'), stringsAsFactors = FALSE, dec = ",")
+    dataset <- suppressMessages(gs_read_csv(gs_key(dataset), verbose = FALSE))
+    observation <- suppressMessages(gs_read_csv(gs_key(observation), verbose = FALSE))
+    layer <- suppressMessages(gs_read_csv(gs_key(layer), comment = "unidade", verbose = FALSE))
     
     # Agregar dados das observações e camadas
     db <- merge(observation, layer, by = "observacao_id")
@@ -43,7 +37,6 @@ createSiteMetadata <-
       } else if (prod(dim(idx)) == 0) {
         cat("Não há dados de ferro")
         return (NULL)
-        
       } else {
         id_col <- id_col[unique(idx[, 2])]
         id_row <- unique(idx[, 1])
@@ -65,7 +58,9 @@ createSiteMetadata <-
           stringr::str_split_fixed(dataset[dataset$item == "organizacao_nome", 2], ";", n = Inf)[1],
         Título = dataset[dataset$item == "dataset_titulo", 2],
         UF = levels(as.factor(db[id_row, "estado_id"])),
-        Contribuição = summary(as.factor(db[id_row, "estado_id"])),
+        Contribuição = summary(as.factor(na.omit(db[id_row, "estado_id"]))),
+        # Por padrão, se mais de uma área do conhecimento é especificada, então assume-se que o trabalho é
+        # do tipo EDAFOLÓGICO.
         Tipo = ifelse(
           dataset[dataset$item == "area_conhecimento", 2] == "Gênese, Morfologia e Classificação dos Solos",
           "PEDOLÓGICO", "EDAFOLÓGICO"),
@@ -74,7 +69,7 @@ createSiteMetadata <-
       print(ctb)
       
       # Salvar arquivo com descrição da contribuição para publicação no website
-      write.csv(ctb, paste("./web/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
+      write.csv(ctb, file = paste("./febr-website/data/", n, ".csv", sep = ""), fileEncoding = "UTF-8")
     } else {
       cat("Não há dados de ferro")
     }
