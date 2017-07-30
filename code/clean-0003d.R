@@ -24,8 +24,8 @@ cols_dataset <- c(
   "Referência.Bibliográfica",
   "Código.Trabalho")
 cols_observation <- c(
-  "Código.PA",
   "Número.PA",
+  "Código.PA",
   "Número.de.Campo",
   "observation_date",
   "Datum",
@@ -101,10 +101,9 @@ cols_observation <- c(
   "Presença.Contato.lico.fragmentário",
   "Presença.de.Nódulos",
   "Presença.Petroplintita",
-  "Ocorrência.Plintita", 
-  "Link.para.Descrição.em.PDF")
+  "Ocorrência.Plintita")
 cols_layer <- c(
-  "Código.PA",
+  "Número.PA",
   "Símbolo.Horizonte",
   "Código.Horizonte",
   "Profundidade.Superior",
@@ -126,11 +125,11 @@ extra_files <- lapply(1:length(extra_files), function (i) {
 })
 
 # Salvar trabalhos em arquivos individuais por UF
-# UF exportadas: RS
+# UF exportadas: RS, SC
 file_name <- names(db)
-uf <- "RS"
+uf <- "SC"
 lapply(1:length(db), function (i) {
-  
+  # i <- 200
   uf_id <- levels(as.factor(db[[i]]$UF))[which.max(summary(as.factor(db[[i]]$UF)))]
   
   if (uf_id == uf) {
@@ -139,10 +138,10 @@ lapply(1:length(db), function (i) {
     dataset <- unique(db[[i]][, cols_dataset])
     dataset <- cbind(
       dataset_id = paste("ctb0", dataset$Código.Trabalho, sep = ""),
-      dataset_title = 
+      dataset_titulo = 
         paste("Conjunto de dados do ", tolower(dataset$Nível.do.Levantamento.Pedológico), " '",
               dataset$Título.do.Trabalho, "'", sep = ""),
-      dataset_description = 
+      dataset_descricao = 
         paste("Conjunto de dados públicos do solo originalmente obtidos do Sistema de Informação de Solos ", 
               "Brasileiros (SISB), ",
               "construído e mantido pela Embrapa Solos (Rio de Janeiro) e Embrapa Informática Agropecuária ",
@@ -172,55 +171,53 @@ lapply(1:length(db), function (i) {
               "precedido pelo contato com a Embrapa.",
               sep = ""
               ),
-      publication_date = "xx-xx-2017",
-      dataset_version = "2.0",
-      dataset_license = "CC BY 4.0",
+      dataset_versao = "2",
+      dataset_licenca = "CC BY 4.0",
+      publicacao_data = "xx-xx-2017",
       # organization_name = "Embrapa Informática Agropecuária / Embrapa Solos; INSERIR ORGANIZAÇÃO AUTORA",
-      organization_name = "",
-      organization_url = "",
-      organization_country = "Brasil",
-      organization_city = "",
-      organization_postal_code = "",
-      organization_street_name = "",
-      organization_street_number = "",
-      author_name = 
-        paste(
-          # "Sistema de Informação de Solos Brasileiros; ", 
-          gsub(",", ";", dataset$Autor), sep = ""),
-      author_email = "",
-      contributor_name = "Alessandro Samuel-Rosa",
-      contributor_email	= 
-        "alessandrosamuelrosa@gmail.com",
-      contributor_organization = "Universidade Federal de Santa Maria (UFSM)",
-      dataset_reference_1 = dataset$Referência.Bibliográfica,
-      dataset_reference_2 = "https://www.bdsolos.cnptia.embrapa.br/consulta_publica.html",
-      dataset_reference_3 = "http://doi.org/10.2136/sssaj2004.0140",
-      subject = "Gênese, Morfologia e Classificação dos Solos",
-      keywords = "",
-      vcge_category = "Pesquisa científica e tecnologia"  
+      organizacao_nome = "",
+      organizacao_url = "",
+      organizacao_pais_id = "Brasil",
+      organizacao_municipio_id = "",
+      organizacao_codigo_postal = "",
+      organizacao_rua_nome = "",
+      organizacao_rua_numero = "",
+      autor_nome = paste(gsub(",", ";", dataset$Autor), sep = ""),
+      autor_email = "",
+      contribuidor_nome = "Alessandro Samuel-Rosa",
+      contribuidor_email	=  "alessandrosamuelrosa@gmail.com",
+      contribuidor_organizacao = "Universidade Federal de Santa Maria (UFSM)",
+      dataset_referencia_1 = dataset$Referência.Bibliográfica,
+      dataset_referencia_2 = "https://www.bdsolos.cnptia.embrapa.br/consulta_publica.html",
+      dataset_referencia_3 = "http://doi.org/10.2136/sssaj2004.0140",
+      area_conhecimento = "Gênese, Morfologia e Classificação dos Solos",
+      palavras_chave = "",
+      categoria_vcge = "Pesquisa científica e tecnologia"  
     )
     dataset <- t(dataset)
     colnames(dataset) <- "item"
     write.table(
       dataset,
-      file = paste("data/raw/", file_name[i], "-", uf, "-dataset.csv", sep = ""), 
-      sep = "\t", fileEncoding = "UTF-8")
+      file = paste("data/raw/ctb0", file_name[i], "-dataset.csv", sep = ""), 
+      sep = "\t", fileEncoding = "UTF-8", dec = ",")
     
     # observation
     observation <- unique(db[[i]][, cols_observation])
     # colnames(observation)[c(1:3, 5, 8, 9)] <- 
       # c("observation_id", "observation_id_book", "observation_id_field", "coord_system", "state_id", 
         # "city_id")
-    colnames(observation)[c(1, 5, 8, 9)] <- c("observation_id", "coord_system", "state_id", "city_id")
+    colnames(observation)[c(1, 2, 4, 5, 8, 9)] <- 
+      c("observacao_id", "sisb_id", "observacao_data", "coord_sistema", "estado_id", "municipio_id")
     observation <- cbind(
-      observation[, 1:5],
-      coord_accuracy = "",
-      coord_source = "",
-      country_id = "BR",
-      sample_type = "SIMPLES",
-      sample_number = as.character(1),
-      sample_area = as.character(1),
-      observation[, 6:ncol(observation)]
+      observation[, c(1:5, 7, 6)],
+      coord_precisao = "",
+      coord_fonte = "",
+      pais_id = "BR",
+      observation[, c(8, 9)],
+      amostra_tipo = "SIMPLES",
+      amostra_quanti = as.character(1),
+      amostra_area = as.character(1),
+      observation[, 10:ncol(observation)]
     )
     colnames(observation) <- gsub("y_coord", "coord_y", colnames(observation), fixed = TRUE)
     colnames(observation) <- gsub("x_coord", "coord_x", colnames(observation), fixed = TRUE)
@@ -252,12 +249,12 @@ lapply(1:length(db), function (i) {
     
     write.table(
       observation, 
-      file = paste("data/raw/", file_name[i], "-", uf, "-observation.csv", sep = ""), 
-      sep = "\t", fileEncoding = "UTF-8", row.names = FALSE)
+      file = paste("data/raw/ctb0", file_name[i], "-observacao.csv", sep = ""), 
+      sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, dec = ",")
     
     # layer
     drop_cols <- 
-      c("Data.da.Coleta", "land_use.y", "litology.y", "Link.para.Descrição.em.PDF", "Sistema.de.Coordenada",
+      c("Data.da.Coleta", "land_use.y", "litology.y", "Sistema.de.Coordenada",
         "Latitude.Graus", "Latitude.Minutos", "Latitude.Segundos", "Latitude.Hemisfério", "Longitude.Graus",
         "Longitude.Minutos", "Longitude.Segundos", "Longitude.Hemisfério", "Northing", "Easting", 
         "Informações.Complementares.1", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "X2ª.Ocorrência", 
@@ -265,26 +262,26 @@ lapply(1:length(db), function (i) {
         "Descrição.Original", "X", "litology", "profile_id", cols_observation, cols_layer, cols_dataset)
     drop_cols_idx <- unique(match(drop_cols, colnames(db[[i]])))
     layer <- cbind(db[[i]][, cols_layer], db[[i]][, -drop_cols_idx])
-    layer <- layer[with(layer, order(Código.PA, Código.Horizonte)), ]
+    layer <- layer[with(layer, order(Número.PA, Código.Horizonte)), ]
     colnames(layer) <- 
-      c("observation_id", "layer_name", "Código.Horizonte", "upper_depth", "lower_depth",
+      c("observacao_id", "camada_nome", "amostra_codigo", "profund_sup", "profund_inf",
         "fe_sulfurico_xxx", "fe_ditionito_xxx", "fe_oxalato_xxx", "fe_pirofosfato_xxx", "fe_xxx_xxx", 
         colnames(layer)[-c(1:10)])
     layer <- cbind(
-      observation_id = layer$observation_id,
-      layer_number = "",
-      layer_name = layer$layer_name,
-      sample_code = layer$Código.Horizonte,
+      observacao_id = layer$observacao_id,
+      camada_numero = "",
+      camada_nome = layer$camada_nome,
+      amostra_codigo = layer$amostra_codigo,
       layer[, 4:ncol(layer)]
       )
     layer <- cbind(
       layer, 
       extra_files[[1]][
-        match(layer$sample_code, extra_files[[1]]$Código.Horizonte), 
+        match(layer$amostra_codigo, extra_files[[1]]$Código.Horizonte), 
         -na.omit(match(drop_cols, colnames(extra_files[[1]])))
         ],
       extra_files[[2]][
-        match(layer$sample_code, extra_files[[2]]$Código.Horizonte), 
+        match(layer$amostra_codigo, extra_files[[2]]$Código.Horizonte), 
         -na.omit(match(drop_cols[-match("Descrição.Original", drop_cols)], colnames(extra_files[[2]])))
         ]
       )
@@ -333,45 +330,45 @@ lapply(1:length(db), function (i) {
     colnames(layer) <- gsub("^forma_", "estrutura_forma_", colnames(layer))
     write.table(
       layer, 
-      file = paste("data/raw/", file_name[i], "-", uf, "-layer.csv", sep = ""), 
-      sep = "\t", fileEncoding = "UTF-8", row.names = FALSE) 
+      file = paste("data/raw/ctb0", file_name[i], "-camada.csv", sep = ""), 
+      sep = "\t", fileEncoding = "UTF-8", row.names = FALSE, dec = ",")
   }
 })
 
-# Carregar dados compilados por pesquisadores da Esalq
-esalq <- read.csv(
-  "data/raw/fe0003/esalq.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
-# esalq_layer <- read.csv(
-  # "data/raw/fe0003/esalq-layer.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
-
-# Atribuir informação da UF para dados da Esalq
-states <- raster::shapefile("data/gis/states.shp")
-tmp <- esalq[, c("latitude", "longitude")]
-sp::coordinates(tmp) <- c("latitude", "longitude")[2:1]
-sp::proj4string(tmp) <- sp::proj4string(states)
-tmp <- sp::over(tmp, states)
-esalq$UF <- tmp[, 1]
-
-# Salvar aquivos da esalq com dados da UF escolhida
-idx <- which(esalq$UF == uf)
-tmp <- esalq[idx, ]
-write.table(
-  tmp, file = paste("data/raw/esalq-", uf, ".csv", sep = ""), sep = "\t", fileEncoding = "UTF-8", 
-  row.names = FALSE)
-# idx <- esalq_layer$esalq_id %in% tmp$esalq_id
+# # Carregar dados compilados por pesquisadores da Esalq
+# esalq <- read.csv(
+#   "data/raw/fe0003/esalq.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+# # esalq_layer <- read.csv(
+#   # "data/raw/fe0003/esalq-layer.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+# 
+# # Atribuir informação da UF para dados da Esalq
+# states <- raster::shapefile("data/gis/states.shp")
+# tmp <- esalq[, c("latitude", "longitude")]
+# sp::coordinates(tmp) <- c("latitude", "longitude")[2:1]
+# sp::proj4string(tmp) <- sp::proj4string(states)
+# tmp <- sp::over(tmp, states)
+# esalq$UF <- tmp[, 1]
+# 
+# # Salvar aquivos da esalq com dados da UF escolhida
+# idx <- which(esalq$UF == uf)
+# tmp <- esalq[idx, ]
 # write.table(
-  # esalq_layer[idx, ], file = paste("data/raw/esalq-layer-", uf, ".csv", sep = ""), sep = "\t", 
-  # fileEncoding = "UTF-8", row.names = FALSE)
-rm(list = ls())
-gc()
-
-# ctb0770
-esalq_layer <- read.csv(
-"data/raw/fe0003/esalq-layer.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
-ctb <- gsheet::gsheet2tbl(
-  "https://docs.google.com/spreadsheets/d/1OzXAgcC4h-mIGe2B358qVAu33d8vO536JHT8aMVNq8Y/edit#gid=1809478575")
-idx <- esalq_layer$esalq_id %in% ctb$observation_id[agrepl("BR", ctb$observation_id)]
-tmp <- esalq_layer[idx, ]
-write.table(
-  tmp, file = paste("data/raw/esalq-layer-tmp.csv", sep = ""), sep = "\t",
-  fileEncoding = "UTF-8", row.names = FALSE)
+#   tmp, file = paste("data/raw/esalq-", uf, ".csv", sep = ""), sep = "\t", fileEncoding = "UTF-8", 
+#   row.names = FALSE)
+# # idx <- esalq_layer$esalq_id %in% tmp$esalq_id
+# # write.table(
+#   # esalq_layer[idx, ], file = paste("data/raw/esalq-layer-", uf, ".csv", sep = ""), sep = "\t", 
+#   # fileEncoding = "UTF-8", row.names = FALSE)
+# rm(list = ls())
+# gc()
+# 
+# # ctb0770
+# esalq_layer <- read.csv(
+# "data/raw/fe0003/esalq-layer.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+# ctb <- gsheet::gsheet2tbl(
+#   "https://docs.google.com/spreadsheets/d/1OzXAgcC4h-mIGe2B358qVAu33d8vO536JHT8aMVNq8Y/edit#gid=1809478575")
+# idx <- esalq_layer$esalq_id %in% ctb$observation_id[agrepl("BR", ctb$observation_id)]
+# tmp <- esalq_layer[idx, ]
+# write.table(
+#   tmp, file = paste("data/raw/esalq-layer-tmp.csv", sep = ""), sep = "\t",
+#   fileEncoding = "UTF-8", row.names = FALSE)
