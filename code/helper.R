@@ -19,16 +19,67 @@ createSiteMetadata <-
     metadata <- paste(docs_sheet, metadata, sep = "")
     sharing <- paste(drive_folder, sharing, sep = "")
     
+    # Definir opções de local
+    locale <- readr::locale(decimal_mark = ",")
+    
     # Descarregar dados
-    dataset <- suppressMessages(gs_read_csv(gs_key(dataset), verbose = FALSE))
-    observation <- suppressMessages(gs_read_csv(gs_key(observation), verbose = FALSE))
-    layer <- suppressMessages(gs_read_csv(gs_key(layer), comment = "unidade", verbose = FALSE))
+    dataset <- suppressMessages(
+      googlesheets::gs_read_csv(
+        googlesheets::gs_key(dataset), verbose = FALSE, na = c("NA", "-", ""), locale = locale))
+    obs_cols <- c("observacao_id", "estado_id", "coord_sistema", "coord_x", "coord_y")
+    observation <- suppressMessages(
+      googlesheets::gs_read_csv(
+        googlesheets::gs_key(observation), verbose = FALSE, na = c("NA", "-", ""), 
+        locale = locale)[, obs_cols])
+    layer <- suppressMessages(
+      googlesheets::gs_read_csv(
+        googlesheets::gs_key(layer), comment = "unidade", verbose = FALSE, na = c("NA", "-", ""), 
+        locale = locale))
+    
+    # Processar dados das coordenadas espaciais -- independente de possuir ou não dados de ferro -- com 
+    # transformação do sistema de referência de coordenadas para EPSG:4326 (se necessário)
+    obs_coords <- na.exclude(observation)
+    if (nrow(obs_coords) >= 1) {
+      if (nlevels(as.factor(obs_coords$coord_sistema)) > 1) {
+        obs_coords <- split(obs_coords, as.factor(obs_coords$coord_sistema))
+        if ("EPSG:4326" %in% names(obs_coords)) {
+          j <- which(!names(obs_coords) %in% "EPSG:4326")
+        } else {
+          j <- 1:length(obs_coords)
+        }
+        obs_coords <- lapply(obs_coords[j], function (x) {
+          sp::coordinates(x) <- c("coord_x", "coord_y")
+          sp::proj4string(x) <- sp::CRS(paste("+init=", tolower(x$coord_sistema[1]), sep = ""))
+          x <- sp::spTransform(x, sp::CRS("+init=epsg:4326"))
+          as.data.frame(x)
+        })
+        obs_coords <- do.call(rbind, obs_coords)
+        
+      } else if (unique(obs_coords$coord_sistema) != "EPSG:4326") {
+        sp::coordinates(obs_coords) <- c("coord_x", "coord_y")
+        sp::proj4string(obs_coords) <- 
+          sp::CRS(paste("+init=", tolower(obs_coords$coord_sistema[1]), sep = ""))
+        obs_coords <- sp::spTransform(obs_coords, sp::CRS("+init=epsg:4326"))
+        obs_coords <- as.data.frame(obs_coords)
+      }
+      obs_coords$observacao_id <- paste(obs_coords$observacao_id, "@", n, sep = "")
+      obs_coords$sharing <- paste('<a href="', sharing, '">Acessar dados</a>', sep = "")
+      obs_coords$mailto <- paste(
+        '<a href="mailto:fe-br@googlegroups.com?subject=', obs_coords$observacao_id, 
+        '">Relatar problema</a>', sep = "")
+      rownames(obs_coords) <- NULL
+      
+      # Salvar arquivo com as coordenadas das observações para publicação no website
+      write.csv(
+        obs_coords[, c("observacao_id", "coord_x", "coord_y", "sharing", "mailto")], 
+        file = paste("./febr-website/data/", n, "-coords.csv", sep = ""), fileEncoding = "UTF-8") 
+    }
     
     # Agregar dados das observações e camadas
     # Usar apenas as colunas necessárias: assume-se que o número máximo de colunas necessárias da tabela
     # 'layer' seja 15.
     db <- merge(
-      observation[, c("observacao_id", "estado_id")], 
+      observation[, c("observacao_id", "estado_id")],
       layer[, 1:ifelse(ncol(layer) > 15, 15, ncol(layer))],
       by = "observacao_id")
     
@@ -51,10 +102,10 @@ createSiteMetadata <-
       # são apresentados.
       Nome <- stringr::str_split_fixed(dataset[dataset$item == "autor_nome", 2], ";", n = Inf)
       if (length(Nome) > 2) {
-      Nome <- paste(paste(Nome[1:2], collapse = "; "), "et alli")
-      } else {
-        paste(Nome, collapse = "; ")
-      }
+        Nome <- paste(paste(Nome[1:2], collapse = "; "), "et alli")
+      } #else {
+        # Nome <- paste(Nome, collapse = "; ")
+      # }
       
       # Preparar descrição da contribuição 
       ctb <- data.frame(
