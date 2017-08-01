@@ -101,7 +101,8 @@ cols_observation <- c(
   "Presença.Contato.lico.fragmentário",
   "Presença.de.Nódulos",
   "Presença.Petroplintita",
-  "Ocorrência.Plintita")
+  "Ocorrência.Plintita",
+  "Link.para.Descrição.em.PDF")
 cols_layer <- c(
   "Número.PA",
   "Símbolo.Horizonte",
@@ -125,9 +126,11 @@ extra_files <- lapply(1:length(extra_files), function (i) {
 })
 
 # Salvar trabalhos em arquivos individuais por UF
-# UF exportadas: RS, SC
+# UF exportadas: RS, SC, PR, MS, MT, RO, AC, AM, 
+# RR, AP, PA, TO, GO, BA, MA, PI, CE, DF, RN, PB,
+# PE, AL, SE, ES, SP, MG
 file_name <- names(db)
-uf <- "SC"
+uf <- "RJ"
 lapply(1:length(db), function (i) {
   # i <- 200
   uf_id <- levels(as.factor(db[[i]]$UF))[which.max(summary(as.factor(db[[i]]$UF)))]
@@ -254,7 +257,7 @@ lapply(1:length(db), function (i) {
     
     # layer
     drop_cols <- 
-      c("Data.da.Coleta", "land_use.y", "litology.y", "Sistema.de.Coordenada",
+      c("Data.da.Coleta", "land_use.y", "litology.y", "Link.para.Descrição.em.PDF", "Sistema.de.Coordenada",
         "Latitude.Graus", "Latitude.Minutos", "Latitude.Segundos", "Latitude.Hemisfério", "Longitude.Graus",
         "Longitude.Minutos", "Longitude.Segundos", "Longitude.Hemisfério", "Northing", "Easting", 
         "Informações.Complementares.1", "Classe.de.Solos.Nível.3", "X1ª.Ocorrência", "X2ª.Ocorrência", 
