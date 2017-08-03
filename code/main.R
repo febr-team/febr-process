@@ -10,7 +10,8 @@ sheets_keys <- googlesheets::gs_read_csv(googlesheets::gs_key("18yP9Hpp8oMdbGsf6
 # Preparar metadados para website (todos)
 t0 <- proc.time()
 idx <- 1:nrow(sheets_keys)
-idx <- nrow(sheets_keys)
+# idx <- nrow(sheets_keys)
+# idx <- 5
 lapply(idx, function (i) {
   x <- unlist(sheets_keys[i, ])
   createSiteMetadata(

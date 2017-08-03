@@ -47,7 +47,7 @@ createSiteMetadata <-
         } else {
           j <- 1:length(obs_coords)
         }
-        obs_coords <- lapply(obs_coords[j], function (x) {
+        obs_coords[j] <- lapply(obs_coords[j], function (x) {
           sp::coordinates(x) <- c("coord_x", "coord_y")
           sp::proj4string(x) <- sp::CRS(paste("+init=", tolower(x$coord_sistema[1]), sep = ""))
           x <- sp::spTransform(x, sp::CRS("+init=epsg:4326"))
