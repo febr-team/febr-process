@@ -62,7 +62,7 @@ ctb <- data.frame(
   url = "https://www.bdsolos.cnptia.embrapa.br/consulta_publica.html")
 rownames(ctb) <- NULL
 ctb
-write.csv(ctb, "./web/data/ctb0003.csv", fileEncoding = "UTF-8")
+# write.csv(ctb, "./web/data/ctb0003.csv", fileEncoding = "UTF-8")
 rm(ctb)
 
 # PERFIS ######################################################################################################
@@ -384,8 +384,8 @@ text(sp::coordinates(states[which(states$uf == "AM"), ]), labels = "AM", cex = 0
 text(sp::coordinates(states[which(states$uf == "RJ"), ]), labels = "RJ", cex = 0.5, pos = 4, offset = 1)
 points(y = -0.119879, x = -67.084119, pch = 4, cex = 0.5)
 text(y = -0.119879, x = -67.084119, "São Gabriel\nda Cachoeira", pos = 2, cex = 0.5)
-text(-74.5, 5, "a)")
-legend(x = -48, y = 6, legend = c("Ill-positioned observation", "Well-positioned observation"), 
+text(x = -74.5, y = 5, "A")
+legend(x = -48, y = 6, legend = c("Misplaced observation", "Well-positioned observation"), 
        col = c("maroon1", "olivedrab"), pch = c(20, 18), bty = "n", cex = 0.5, pt.cex = c(1, 0.5))
 dev.off()
 
@@ -489,9 +489,9 @@ points(y = -1.295154, x = -47.921455, pch = 4, cex = 0.5)
 text(y = -1.295154, x = -46, "Castanhal", cex = 0.5, pos = 3)
 points(y = -5.647888, x = -48.118402, pch = 4, cex = 0.5)
 text(y = -5.647888, x = -48.118402, "Araguatins", cex = 0.5, pos = 2)
-legend(x = -48, y = 6, legend = c("Ill-positioned observation", "Well-positioned observation"), 
+legend(x = -48, y = 6, legend = c("Misplaced observation", "Well-positioned observation"), 
        col = c("maroon1", "olivedrab"), pch = c(20, 18), bty = "n", cex = 0.5, pt.cex = c(1, 0.5))
-text(-74.5, 5, "b)")
+text(-74.5, 5, "B")
 dev.off()
 
 # Lat -29 ao invés de -27
@@ -1122,7 +1122,7 @@ text(sp::coordinates(states[which(states$uf == "PR"), ]), labels = "PR", cex = 0
 text(sp::coordinates(states[which(states$uf == "PA"), ]), labels = "PA", cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "SP"), ]), labels = "SP", cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "RS"), ]), labels = "RS", cex = 0.5)
-text(-74.5, 5, "c)")
+text(-74.5, 5, "C")
 dev.off()
 
 # Identificar registros sem coordenadas. Existem quase 3 mil registros sem coordenadas. É muita coisa!!!
@@ -1130,6 +1130,10 @@ idx <- which(is.na(pf$x_coord))
 length(idx)
 sort(summary(as.factor(pf$UF[idx])), decreasing = TRUE)
 
+# Criar coluna de cores
+pf$esalqcolor <- "olivedrab"
+pf$esalqcolor[idx] <- "orange1"
+  
 # Identificar registros do projeto RADAMBRASIL
 pf$radam <- FALSE
 pf$radam[grep("radambrasil", pf$Título.do.Trabalho, ignore.case = TRUE)] <- TRUE
@@ -1550,7 +1554,8 @@ tmp <- read.csv(
 nrow(tmp)
 tmp <- merge(
   pf[-idx, 
-     c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology", "Município", "UF")], 
+     c("Código.PA", "x_coord", "y_coord", "observation_date", "land_use", "litology", "Município", "UF",
+       "esalqcolor")], 
   tmp, by = "Código.PA", all = TRUE)
 nrow(tmp)
 tmp$Município <- ifelse(!is.na(tmp$Município.x), tmp$Município.x, tmp$Município.y)
@@ -1560,6 +1565,7 @@ sum(is.na(tmp$x_coord))
 str(tmp)
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 points(tmp[, 2:3], col = "olivedrab", pch = 18, cex = 0.5)
+
 # Figura: adição das coordenadas da esalq ####
 dev.off()
 png("res/fig/sisb-a-points-esalq.png", width = 1200, height = 1200, res = 300)
@@ -1567,8 +1573,8 @@ cex <- 0.5
 par(mar = c(2, 2, 0, 0) + 0.1)
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
-points(tmp[, 2:3], col = "olivedrab", pch = 18, cex = 0.5)
-text(-74.5, 5, "d)")
+points(tmp[, 2:3], col = tmp$esalqcolor, pch = 18, cex = 0.5)
+text(-74.5, 5, "D")
 text(sp::coordinates(states[which(states$uf == "PR"), ]), labels = "PR", cex = cex)
 text(sp::coordinates(states[which(states$uf == "SP"), ]), labels = "SP", cex = cex)
 text(sp::coordinates(states[which(states$uf == "MG"), ]), labels = "MG", cex = cex)
@@ -1578,6 +1584,8 @@ text(sp::coordinates(states[which(states$uf == "RN"), ]), labels = "RN", cex = c
 text(sp::coordinates(states[which(states$uf == "PE"), ]), labels = "PE", cex = cex, pos = 4, offset = 1.5)
 text(sp::coordinates(states[which(states$uf == "PB"), ]), labels = "PB", cex = cex, pos = 4, offset = 1)
 text(sp::coordinates(states[which(states$uf == "ES"), ]), labels = "ES", cex = cex, pos = 4)
+legend(x = -48, y = 6, legend = c("Cooper et al. (2005)", "BDSolos"), 
+       col = c("orange1", "olivedrab"), pch = 18, bty = "n", cex = 0.5)
 dev.off()
 
 # Salvar dados
