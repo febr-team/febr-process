@@ -9,6 +9,16 @@ spTransform0 <-
     as.data.frame(y)
   }
 
+# Expand letters as to match column names used by Google Sheets ####
+expand.letters <-
+  function (pos, upper.case = TRUE) {
+    if (upper.case) {
+      c(LETTERS, sapply(LETTERS, function(x) paste0(x, LETTERS)))[pos]
+    } else {
+      c(letters, sapply(letters, function(x) paste0(x, letters)))[pos]
+    }
+  }
+
 # # Calcular contribuições e gerar metadados para website #######################################################
 # createSiteMetadata <-
 #   function (n, dataset, observation, layer, metadata, sharing) {
