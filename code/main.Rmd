@@ -1,0 +1,45 @@
+---
+author: "Alessandro Samuel-Rosa"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+library(febr)
+library(glue)
+library(googlesheets)
+library(readr)
+library(magrittr)
+source('helper.R')
+```
+
+# Download sheets keys
+
+```{r, include=FALSE}
+key <- "18yP9Hpp8oMdbGsf6cVu4vkDv-Dj-j5gjEFgEXN-5H-Q"
+sheets_keys <- try(gs_key(key) %>% gs_read_csv(verbose = FALSE), TRUE)
+if (class(sheets_keys) == "try-error") {
+  url <- glue("https://docs.google.com/spreadsheets/d/{key}/export?format=csv")
+  tempfile <- tempfile(fileext = "cvs")
+  download.file(url, destfile = tempfile)
+  sheets_keys <- read_csv(tempfile)
+}
+```
+
+# Edit column name
+
+```{r}
+obs_keys <- sheets_keys$observacao
+n <- length(obs_keys)
+for (i in seq(n)) {
+  # i <- 2
+  cat(sheets_keys$ctb[i], "")
+  tmp_key <- gs_key(obs_keys[i], verbose = FALSE)
+  tmp <- suppressMessages(gs_read_csv(tmp_key, n_max = 1, col_names = FALSE, verbose = FALSE))
+  idx <- match('localizacao_descritiva', tmp)
+  if (!is.na(idx)) {
+    anchor <- expand.letters(pos = idx) %>% glue("1")
+    tmp_key <- gs_edit_cells(tmp_key, input = 'coord_descricao', anchor = anchor)
+  }
+}
+```
