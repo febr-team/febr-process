@@ -1,3 +1,18 @@
+# Split string by number of items
+splitString <-
+  function (string) {
+    
+    string <- as.character(string)
+    n <- nchar(string)
+    if (n == 5) {
+      string <- stringi::stri_reverse(string)
+      string <- strsplit(string, "(?<=.{2})", perl = TRUE)[[1]] %>% rev()
+      string <- stringi::stri_reverse(string)  
+    } else {
+      string <- strsplit(string, "(?<=.{2})", perl = TRUE)[[1]]
+    }
+    return (string)
+  }
 # Transformação de sistema de coordenadas de referência ####
 spTransform0 <- 
   function (coord_x, coord_y, crs_src, crs_dst = "EPSG:4326") {
