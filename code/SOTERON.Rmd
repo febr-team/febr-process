@@ -1,0 +1,79 @@
+---
+title: "Zoneamento Socioeconômico-Ecológico do Estado de Rondônia"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+library(glue)
+library(magrittr)
+library(dplyr)
+library(sp)
+library(stringr)
+library(mapview)
+source('helper.R')
+dir <- "../data/raw/ctb0032/disco 16/SIGTERON/SOTERON/"
+```
+
+## Tabela ctb0032-observacao
+
+```{r}
+sdbsite <- glue("{dir}sdbsite.csv") %>% read.csv(stringsAsFactors = FALSE)
+colnames(sdbsite)[c(1, 14, 15)] <- c("observacao_id", "coord_y", "coord_x")
+sdbsite$coord_x <- gsub("W", "", sdbsite$coord_x)
+sdbsite$coord_x <- gsub(" ", "", sdbsite$coord_x) %>% as.numeric()
+sdbsite$coord_y <- gsub("S", "", sdbsite$coord_y) %>% as.numeric()
+```
+
+Duas observações estão localizadas fora dos limites do estado. Parece ter havido erro na digitação, com 
+62 sendo substituído por 52.
+
+```{r}
+id <- grep("^52", sdbsite$coord_x)
+sdbsite$coord_x[id] <- gsub("52", "62", sdbsite$coord_x[id]) %>% as.numeric()
+sdbsite$observacao_id[id]
+```
+
+As coordenadas são geográfica e estão organizadas em cadeias de caracteres. É preciso separá-las para 
+calcular a coordenada em graus.
+
+```{r}
+y <- lapply(sdbsite$coord_y, splitString)
+y <- do.call(rbind, y)
+y <- apply(y, 2, as.numeric)
+sdbsite$coord_y <- -1 * (y[, 1] + y[, 2] / 60 + y[, 3] / 3600)
+x <- lapply(sdbsite$coord_x, splitString)
+x <- do.call(rbind, x)
+x <- apply(x, 2, as.numeric)
+sdbsite$coord_x <- -1 * (x[, 1] + x[, 2] / 60 + x[, 3] / 3600)
+```
+
+Parece não haver informações sobre o sistema de referência de coordenadas, motivo pelo qual adota-se o
+WGS84.
+
+```{r}
+coordinates(sdbsite) <- ~ coord_x + coord_y
+proj4string(sdbsite) <- CRS("+proj=longlat +ellps=WGS84")
+mapview(sdbsite, "observacao_id")
+```
+
+```{r}
+write.table(
+  sdbsite, file = "../data/raw/ctb0032/ctb0032-observacao.csv", dec = ",", row.names = FALSE, sep = "\t")
+```
+
+## Tabela ctb0032-camada
+
+Todas as observações de `sdbsite` possuem camadas em `sdbhoriz`.
+
+```{r}
+sdbhoriz <- glue("{dir}sdbhoriz.csv") %>% read.csv(stringsAsFactors = FALSE)
+colnames(sdbhoriz)[1:5] <- c("observacao_id", "camada_numero", "camada_nome", "profund_sup", "profund_inf")
+all(match(unique(sdbhoriz$observacao_id), unique(sdbsite$observacao_id)))
+```
+
+```{r}
+write.table(
+  sdbhoriz, file = "../data/raw/ctb0032/ctb0032-camada.csv", dec = ",", row.names = FALSE, sep = "\t")
+```
+
