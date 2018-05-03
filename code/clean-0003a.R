@@ -1062,6 +1062,7 @@ pf[idx, "utm"][id_utm] <- tmp
 
 # Converter coordenadas métricas para grau decimal.
 idx_crs <- unique(pf[idx, "utm"])
+pf$isutm <- !is.na(pf["utm"])
 for (i in 1:length(idx_crs)) {
   j <- which(pf$utm == idx_crs[i])
   tmp <- pf[j, c("Easting", "Northing")]
@@ -1108,14 +1109,16 @@ for (i in 1:length(idx_crs)) {
 sum(!is.na(pf$x_coord))
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
-points(pf[, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[!pf$isutm, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[pf$isutm, c("x_coord", "y_coord")], col = "red", pch = 18, cex = 0.5)
 # Figura: Observations with geographic and projected coordinates ####
 dev.off()
 png("res/fig/sisb-a-points-utm.png", width = 1200, height = 1200, res = 300)
 par(mar = c(2, 2, 0, 0) + 0.1)
 sp::plot(states, col = "khaki", xlim = c(states@bbox[1], -34.7), axes = TRUE)
 abline(h = pretty(states@bbox[2, ]), v = pretty(states@bbox[1, ]), col = "lightgray", lty = "dashed")
-points(pf[, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[!pf$isutm, c("x_coord", "y_coord")], col = "olivedrab", pch = 18, cex = 0.5)
+points(pf[pf$isutm, c("x_coord", "y_coord")], col = "orange1", pch = 18, cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "BA"), ]), labels = "BA", cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "MG"), ]), labels = "MG", cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "PR"), ]), labels = "PR", cex = 0.5)
@@ -1123,6 +1126,8 @@ text(sp::coordinates(states[which(states$uf == "PA"), ]), labels = "PA", cex = 0
 text(sp::coordinates(states[which(states$uf == "SP"), ]), labels = "SP", cex = 0.5)
 text(sp::coordinates(states[which(states$uf == "RS"), ]), labels = "RS", cex = 0.5)
 text(-74.5, 5, "C")
+legend(x = -48, y = 6, legend = c("Projected coordinates", "Geographic coordinates"), 
+       col = c("orange1", "olivedrab"), pch = 18, bty = "n", cex = 0.5)
 dev.off()
 
 # Identificar registros sem coordenadas. Existem quase 3 mil registros sem coordenadas. É muita coisa!!!
@@ -1549,8 +1554,8 @@ sort(summary(as.factor(pf$UF[idx])), decreasing = TRUE)
 
 # Recarregar dados do SISB e fundir com os dados processados até aqui.
 # Os dados são salvos em um arquivo CSV para uso posterior.
-tmp <- read.csv(
-  "data/raw/fe0003/embrapa.csv", head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+file <- unz("data/raw/fe0003/embrapa.zip", "embrapa.csv")
+tmp <- read.table(file, header = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 nrow(tmp)
 tmp <- merge(
   pf[-idx, 
