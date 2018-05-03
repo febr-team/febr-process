@@ -2,7 +2,16 @@
 .Rhistory
 .RData
 .Ruserdata
-data/raw
+#data/raw
+data/raw/ctb0009
+data/raw/ctb0025
+data/raw/ctb0032
+data/raw/ctb0643
+data/raw/ctb0770
+data/raw/fe0001
+data/raw/fe0002
+data/raw/fe0004
+data/raw/fe0672
 #data/gis
 web
 draw
