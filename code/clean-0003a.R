@@ -11,9 +11,9 @@ source("code/helper.R")
 source("code/helper-utf8.R", encoding = "UTF-8")
 
 # Carregar dados
-file <- "fe0003/embrapa.csv"
-db <- read.csv(
-  paste("data/raw/", file, sep = ""), head = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
+# file <- "fe0003/embrapa.zip"
+file <- unz("data/raw/fe0003/embrapa.zip", "embrapa.csv")
+db <- read.table(file, header = TRUE, sep = ";", stringsAsFactors = FALSE, encoding = "UTF-8")
 nrow(db)
 
 # Identificar linhas e colunas contendo dados de ferro
