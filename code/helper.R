@@ -180,7 +180,8 @@ getCity <-
       "request=GetFeature&typeName=CGEO:LIM_Municipios2013", sep = "")
     gdalUtils::ogr2ogr(
       src_datasource_name = dsn, dst_datasource_name = tmp, 
-      where = paste("nommunic='", cityname, "'", sep = ""))
+      where = paste("Nome_do_municipio='", cityname, "'", sep = ""))
+      # where = paste("nommunic='", cityname, "'", sep = ""))
     rgdal::readOGR(dsn = tmp, stringsAsFactors = FALSE)
   }
 swapAxisOrder <-
